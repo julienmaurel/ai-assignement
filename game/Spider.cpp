@@ -42,14 +42,22 @@ void CSpider::OnUpdate(Uint32 time, Uint32 deltaTime)
 	switch (state)
 	{
 	case IDLE:
+		if (health < 100) health += 0.2f;
 		break;
 	case PATROL:	// take a random turn at a random frame, on average once every 60 frames
+		health -= 0.05f;
+		if (rand() % 60 == 0) SetDirection(GetDirection() + rand() % 180 - 90);
 		break;
 	case CHASE:
+		health -= 0.1f;
+		SetDirection(enemyPosition - GetPosition());
 		break;
 	case ATTACK:
+		health -= 0.05f;
 		break;
 	case FLEE:
+		health -= 0.1f;
+		SetDirection(GetPosition() - enemyPosition);
 		break;
 	case DIE:
 		break;
@@ -70,14 +78,28 @@ void CSpider::OnUpdate(Uint32 time, Uint32 deltaTime)
 	switch (state)
 	{
 	case IDLE:
+		if (health > 90) ChangeState(PATROL);
+		if (enemyDistance < 200 && health > 40) ChangeState(CHASE);
+		if (enemyDistance < 50) ChangeState(ATTACK);
+		if (health < 1) ChangeState(DIE);
 		break;
 	case PATROL:
+		if (enemyDistance < 200) ChangeState(CHASE);
+		if (health < 20) ChangeState(IDLE);
 		break;
 	case CHASE:
+		if (enemyDistance > 250) ChangeState(IDLE);
+		if (enemyDistance < 50) ChangeState(ATTACK);
+		if (health < 30) ChangeState(FLEE);
 		break;
 	case ATTACK:
+		if (enemyDistance > 64) ChangeState(CHASE);
+		if (health < 30) ChangeState(FLEE);
+		if (health < 1) ChangeState(DIE);
 		break;
 	case FLEE:
+		if (health < 10) ChangeState(IDLE);
+		if (enemyDistance > 250) ChangeState(IDLE);
 		break;
 	case DIE:
 		break;
@@ -100,18 +122,26 @@ void CSpider::ChangeState(STATE newState)
 		SetAnimation("idle", 4);
 		break;
 	case PATROL:
+		SetDirection((float)(rand() % 360));
+		SetSpeed(PATROL_SPEED);
 		SetAnimation("walk");
 		break;
 	case CHASE:
+		SetDirection(enemyPosition - GetPosition());
+		SetSpeed(CHASE_SPEED);
 		SetAnimation("walk");
 		break;
 	case ATTACK:
+		SetVelocity(0, 0);
 		SetAnimation("attack");
 		break;
 	case FLEE:
+		SetDirection(GetPosition() - enemyPosition);
+		SetSpeed(CHASE_SPEED);
 		SetAnimation("walk");
 		break;
 	case DIE:
+		SetVelocity(0, 0);
 		SetAnimation("death");
 		break;
 	}
