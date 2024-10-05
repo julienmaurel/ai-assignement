@@ -175,9 +175,9 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Worker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyGame.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tree.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -192,8 +192,8 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Worker.h" />
     <ClInclude Include="MyGame.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Tree.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>

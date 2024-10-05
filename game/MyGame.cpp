@@ -41,8 +41,8 @@ CMyGame::CMyGame(void) :
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 	},
 	m_obstacleLayout
@@ -54,7 +54,7 @@ CMyGame::CMyGame(void) :
 		{false, false, false, false, false, false, false, false, false, false},
 		{false, false, false, false, false, false, false, false, false, false},
 		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, true, true, true},
+		{false, false, false, false, false, false, false, false, false, false},
 		{false, false, false, false, false, false, false, true, true, true},
 		{false, false, false, false, false, false, false, true, true, true},
 	}
@@ -73,6 +73,8 @@ void CMyGame::OnUpdate()
 	Uint32 t = GetTime();
 	for (CTree* pTree : m_trees)
 		pTree->Update(t);
+	for (CWorker* pWorker : m_workers)
+		pWorker->Update(t);
 }
 
 void CMyGame::OnDraw(CGraphics* g)
@@ -80,7 +82,15 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_tiles.for_each(&CSprite::Draw, g);
 	m_buildings.for_each(&CSprite::Draw, g);
 	m_trees.for_each(&CSprite::Draw, g);
+	m_workers.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
+
+	if (true) {
+		for (int i = 0; i < 10; i++) {
+			g->DrawLine(CVector(i * 64.f, 10 * 64.f), CVector(i * 64.f, 0), CColor::Black());
+			g->DrawLine(CVector(10 * 64.f, i * 64.f), CVector(0, i * 64.f), CColor::Black());
+		}
+	}
 
 	// *g << font("ANCIENT.ttf", 40) << color(CColor::White()) << xy(355.f, 30.f) << m_money << endl;
 }
@@ -147,12 +157,15 @@ void CMyGame::OnInitialize()
 		{
 			switch (m_resourceLayout[x][y]) {
 			case TREE:
-				m_trees.push_back(new CTree(x * 64.f + 81.f, y * 64.f + 81.f, new CGraphics(REPOSITORY + "/game/images/assets/Resources/Trees/Tree.png"), 0));
+				m_trees.push_back(new CTree(x * 64.f + 64.f, y * 64.f + 81.f, new CGraphics(REPOSITORY + "/game/images/assets/Resources/Trees/Tree.png"), 0));
 				break;
 			default:
 				break;
 			}
 		}
+
+	// Create a single worker (temporary)
+	m_workers.push_back(new CWorker(2 * 64.f + 32.f, 1 * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red.png"), 0));
 
 	// Create UI
 	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));

@@ -3,6 +3,7 @@
 #include <string>
 
 #include "Tree.h"
+#include "Worker.h"
 
 const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";
 
@@ -40,6 +41,7 @@ class CMyGame : public CGame
 	CSpriteList m_tiles;
 	CSpriteList m_buildings;
 	CTreeList m_trees;
+	CWorkerList m_workers;
 	CSpriteList m_ui;
 
 	int m_money;
