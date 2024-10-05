@@ -1,17 +1,68 @@
+#include <cstdlib>
+
 #include "stdafx.h"
 #include "MyGame.h"
 
 #pragma warning(disable:4244)
 
-CMyGame::CMyGame(void) : 
-	m_player(640, 384, "boy.png", 0),
-	m_background("tile_5.png")
+CMyGame::CMyGame(void) :
+	m_tileLayout 
+	{
+		{BL_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, TL_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{B_G, G, G, G, G, G, G, G, G, T_G},
+		{BR_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, TR_G}
+	},
+	m_buildingLayout
+	{
+		{HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B}
+	},
+	m_resourceLayout
+	{
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+	},
+	m_obstacleLayout
+	{
+		{true, true, true, false, false, false, false, false, false, false},
+		{true, true, true, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, false, false, false},
+		{false, false, false, false, false, false, false, true, true, true},
+		{false, false, false, false, false, false, false, true, true, true},
+		{false, false, false, false, false, false, false, true, true, true},
+	}
 {
 }
 
 CMyGame::~CMyGame(void)
 {
-	// TODO: add destruction code here
 }
 
 /////////////////////////////////////////////////////
@@ -19,69 +70,19 @@ CMyGame::~CMyGame(void)
 
 void CMyGame::OnUpdate()
 {
-	if (!IsGameMode() || m_spiders.size() == 0) return;
-
 	Uint32 t = GetTime();
-
-	// Update AI Agents
-	bool bAttack = IsKeyDown(SDLK_LCTRL) || IsKeyDown(SDLK_RCTRL);
-	if (IsKeyDown(SDLK_w) || IsKeyDown(SDLK_UP)) m_player.Input(CPlayer::UP, bAttack);
-	else if (IsKeyDown(SDLK_s) || IsKeyDown(SDLK_DOWN)) m_player.Input(CPlayer::DOWN, bAttack);
-	else if (IsKeyDown(SDLK_a) || IsKeyDown(SDLK_LEFT)) m_player.Input(CPlayer::LEFT, bAttack);
-	else if (IsKeyDown(SDLK_d) || IsKeyDown(SDLK_RIGHT)) m_player.Input(CPlayer::RIGHT, bAttack);
-	else m_player.Input(CPlayer::NO_DIR, bAttack);
-
-	float health = 0;
-	for (CSpider *pSpider : m_spiders)
-	{
-		health += pSpider->GetHealth();
-
-		pSpider->SetEnemyPosition(m_player.GetPosition());
-
-		if (Distance(pSpider->GetPosition(), m_player.GetPosition()) <= 64)
-		{
-			if (pSpider->GetState() == CSpider::ATTACK)
-				m_player.OnAttacked();
-			if (m_player.GetState() == CPlayer::ATTACK)
-				pSpider->OnAttacked();
-		}
-	}
-
-	if (m_player.GetHealth() <= 0 || health <= 0)
-		GameOver();
-
-	m_player.Update(t);
-	for (CSpider* pSpider : m_spiders)
-		pSpider->Update(t);
-}
-
-void DrawHealth(CGraphics* g, CVector pos, float w, float h, float health)
-{
-	if (health <= 0) return;
-	g->DrawRect(CRectangle(pos.m_x - 1, pos.m_y - 1, w + 1, h + 1), CColor::Black());
-	g->FillRect(CRectangle(pos.m_x, pos.m_y - 1, ceil(w * health / 100.f), h), health > 20 ? CColor::DarkGreen() : CColor::Red());
+	for (CTree* pTree : m_trees)
+		pTree->Update(t);
 }
 
 void CMyGame::OnDraw(CGraphics* g)
 {
-	// Draw background
-	for (int i = 0; i < 5; i++)
-		for (int j = 0; j < 3; j++)
-			g->Blit(CVector(256.f*i, 256.f *j), m_background);
+	m_tiles.for_each(&CSprite::Draw, g);
+	m_buildings.for_each(&CSprite::Draw, g);
+	m_trees.for_each(&CSprite::Draw, g);
+	m_ui.for_each(&CSprite::Draw, g);
 
-	m_player.Draw(g);
-	DrawHealth(g, m_player.GetPosition() + CVector(-32, 32), 20, 4, m_player.GetHealth());
-	for (CSpider* pSpider : m_spiders)
-	{
-		pSpider->Draw(g);
-		DrawHealth(g, pSpider->GetPosition() + CVector(-32, 32), 20, 4, pSpider->GetHealth());
-	}
-
-	if (IsGameOver())
-		if (m_player.GetHealth() <= 0)
-			* g << font(48) << color(CColor::DarkRed()) << vcenter << center << "GAME OVER" << endl;
-		else
-			*g << font(48) << color(CColor::DarkBlue()) << vcenter << center << "YOU'RE A SPIDER KILLER!" << endl;
+	// *g << font("ANCIENT.ttf", 40) << color(CColor::White()) << xy(355.f, 30.f) << m_money << endl;
 }
 
 /////////////////////////////////////////////////////
@@ -90,6 +91,75 @@ void CMyGame::OnDraw(CGraphics* g)
 // one time initialisation
 void CMyGame::OnInitialize()
 {
+	// Create Tiles
+	for (int y = 0; y < 10; y++)
+		for (int x = 0; x < 10; x++)
+		{
+			switch (m_tileLayout[x][y]) {
+				case G:
+					m_tiles.push_back(GROUND(1, 2, x, y));
+					break;
+				case T_G:
+					m_tiles.push_back(GROUND(1, 3, x, y));
+					break;
+				case B_G:
+					m_tiles.push_back(GROUND(1, 1, x, y));
+					break;
+				case L_G:
+					m_tiles.push_back(GROUND(0, 2, x, y));
+					break;
+				case R_G:
+					m_tiles.push_back(GROUND(2, 2, x, y));
+					break;
+				case TL_G:
+					m_tiles.push_back(GROUND(0, 3, x, y));
+					break;
+				case TR_G:
+					m_tiles.push_back(GROUND(2, 3, x, y));
+					break;
+				case BL_G:
+					m_tiles.push_back(GROUND(0, 1, x, y));
+					break;
+				case BR_G:
+					m_tiles.push_back(GROUND(2, 1, x, y));
+					break;
+				default:
+					break;
+			}
+		}
+
+	// Create buildings
+	for (int y = 0; y < 10; y++)
+		for (int x = 0; x < 10; x++)
+		{
+			switch (m_buildingLayout[x][y]) {
+			case HOUSE:
+				m_buildings.push_back(new CSprite(x * 64.f + 64.f, y * 64.f + 81.f, new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Buildings/House/House_Red.png"), 0));
+				break;
+			default:
+				break;
+			}
+		}
+	
+	// Create resources
+	for (int y = 0; y < 10; y++)
+		for (int x = 0; x < 10; x++)
+		{
+			switch (m_resourceLayout[x][y]) {
+			case TREE:
+				m_trees.push_back(new CTree(x * 64.f + 81.f, y * 64.f + 81.f, new CGraphics(REPOSITORY + "/game/images/assets/Resources/Trees/Tree.png"), 0));
+				break;
+			default:
+				break;
+			}
+		}
+
+	// Create UI
+	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));
+	// m_ui.push_back(new CSprite(320.f, 32.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Buttons/Button_Blue.png"), 0));
+	
+	// Core values
+	// m_money = 10;
 }
 
 // called when a new game is requested (e.g. when F2 pressed)
@@ -103,15 +173,6 @@ void CMyGame::OnDisplayMenu()
 // as a second phase after a menu or a welcome screen
 void CMyGame::OnStartGame()
 {
-	m_spiders.delete_all();
-
-	m_spiders.push_back(new CSpider(640, 40, "spider64.png", 0));
-	m_spiders.push_back(new CSpider(80, 192, "spider64.png", 0));
-	m_spiders.push_back(new CSpider(1200, 576, "spider64.png", 0));
-	
-	m_player.SetPosition(640, 384);
-	m_player.ChangeState(CPlayer::IDLE, CPlayer::DOWN);
-	m_player.SetHealth(100);
 }
 
 // called when a new level started - first call for nLevel = 1
@@ -140,13 +201,6 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		PauseGame();
 	if (sym == SDLK_F2)
 		NewGame();
-
-	if (sym == SDLK_1) (*m_spiders.begin())->ChangeState(CSpider::IDLE);
-	if (sym == SDLK_2) (*m_spiders.begin())->ChangeState(CSpider::PATROL);
-	if (sym == SDLK_3) (*m_spiders.begin())->ChangeState(CSpider::CHASE);
-	if (sym == SDLK_4) (*m_spiders.begin())->ChangeState(CSpider::ATTACK);
-	if (sym == SDLK_5) (*m_spiders.begin())->ChangeState(CSpider::FLEE);
-	if (sym == SDLK_6) (*m_spiders.begin())->ChangeState(CSpider::DIE);
 }
 
 void CMyGame::OnKeyUp(SDLKey sym, SDLMod mod, Uint16 unicode)

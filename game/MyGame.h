@@ -1,14 +1,48 @@
 #pragma once
 
-#include "Player.h"
-#include "Spider.h"
+#include <string>
+
+#include "Tree.h"
+
+const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";
+
+#define GROUND(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Flat.png", 10, 4, col, row), 0)
+enum TileType {
+	NO_T,
+	G,
+	T_G,
+	TR_G,
+	TL_G,
+	L_G,
+	R_G,
+	BL_G,
+	BR_G,
+	B_G,
+};
+
+enum BuildingType {
+	NO_B,
+	HOUSE,
+};
+
+enum ResourceType {
+	NO_R,
+	TREE,
+};
 
 class CMyGame : public CGame
 {
-	// Define sprites and other instance variables here
-	CPlayer m_player;
-	CSpiderList m_spiders;
-	CGraphics m_background;
+	TileType m_tileLayout[10][10];
+	BuildingType m_buildingLayout[10][10];
+	ResourceType m_resourceLayout[10][10];
+	bool m_obstacleLayout[10][10];
+
+	CSpriteList m_tiles;
+	CSpriteList m_buildings;
+	CTreeList m_trees;
+	CSpriteList m_ui;
+
+	int m_money;
 
 public:
 	CMyGame(void);
