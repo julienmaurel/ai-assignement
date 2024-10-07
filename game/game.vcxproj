@@ -175,6 +175,7 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Pathfinding.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MyGame.cpp" />
@@ -192,6 +193,7 @@ $(LocalDebuggerEnvironment)</LocalDebuggerEnvironment>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Pathfinding.h" />
     <ClInclude Include="Worker.h" />
     <ClInclude Include="MyGame.h" />
     <ClInclude Include="Tree.h" />

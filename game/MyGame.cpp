@@ -6,20 +6,20 @@
 #pragma warning(disable:4244)
 
 CMyGame::CMyGame(void) :
-	m_tileLayout 
-	{
-		{BL_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, TL_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{B_G, G, G, G, G, G, G, G, G, T_G},
-		{BR_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, TR_G}
-	},
-	m_buildingLayout
+	m_tileLayout
+		{
+			{BL_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, TL_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{B_G, G, G, G, G, G, G, G, G, T_G},
+			{BR_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, TR_G}
+		},
+m_buildingLayout
 	{
 		{HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
@@ -32,7 +32,7 @@ CMyGame::CMyGame(void) :
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B}
 	},
-	m_resourceLayout
+m_resourceLayout
 	{
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
@@ -45,7 +45,7 @@ CMyGame::CMyGame(void) :
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 	},
-	m_obstacleLayout
+m_obstacleLayout
 	{
 		{true, true, true, false, false, false, false, false, false, false},
 		{true, true, true, false, false, false, false, false, false, false},
@@ -170,7 +170,11 @@ void CMyGame::OnInitialize()
 	// Create UI
 	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));
 	// m_ui.push_back(new CSprite(320.f, 32.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Buttons/Button_Blue.png"), 0));
-	
+
+	// Pathfinding graph initialization
+	m_pathfinder.setObstacles(m_obstacleLayout);
+	m_pathfinder.initialize();
+
 	// Core values
 	// m_money = 10;
 }
