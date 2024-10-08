@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Pathfinding.h"
 
-Pathfinding::Pathfinding() 
+Pathfinding::Pathfinding()
 {
 }
 
@@ -90,4 +90,11 @@ void Pathfinding::draw(CGraphics* g) {
 			g->DrawLine(CVector(m_graph.at(i).pos.GetX(), m_graph.at(i).pos.GetY()), CVector(target.GetX(),target.GetY()), CColor::Red());
 		}
 	}
+}
+
+bool Pathfinding::dijkstra(CVector start, CVector goal, vector<CVector>& path) {
+	int nGoal = goal.GetX() * 10 + goal.GetY();
+	CVector goalPos = m_graph[nGoal].pos;
+	path.push_back(goalPos);
+	return true;
 }

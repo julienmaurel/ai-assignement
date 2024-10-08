@@ -20,4 +20,5 @@ class Pathfinding
 		void setObstacles(bool obstacle[10][10]);
 		void initialize();
 		void draw(CGraphics* g);
+		bool dijkstra(CVector start, CVector goal, vector<CVector>& path);
 };

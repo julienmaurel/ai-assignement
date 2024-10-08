@@ -46,8 +46,12 @@ class CMyGame : public CGame
 	CSpriteList m_ui;
 
 	Pathfinding m_pathfinder;
+	list<CVector> m_waypoints;//[1]
 
 	int m_money;
+
+	string m_testing;
+	int m_cnt;
 
 public:
 	CMyGame(void);

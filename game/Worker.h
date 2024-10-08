@@ -3,8 +3,7 @@
 class CWorker : public CSprite
 {
 public:
-	CWorker(Sint16 x, Sint16 y, char* pFileBitmap, Uint32 time);
-	CWorker(Sint16 x, Sint16 y, CGraphics* pGraphics, Uint32 time);
+	CWorker(Sint16 x, Sint16 y, CGraphics* pGraphicsLeft, CGraphics* pGraphicsRight, Uint32 time);
 	~CWorker(void);
 
 	void OnUpdate(Uint32 time, Uint32 deltaTime);

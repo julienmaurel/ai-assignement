@@ -63,6 +63,8 @@ m_obstacleLayout
 
 CMyGame::~CMyGame(void)
 {
+	m_cnt = 0;
+	m_money = 10;
 }
 
 /////////////////////////////////////////////////////
@@ -71,6 +73,41 @@ CMyGame::~CMyGame(void)
 void CMyGame::OnUpdate()
 {
 	Uint32 t = GetTime();
+
+	// NPC : follow the waypoints
+	for (CWorker* pWorker : m_workers) {
+		if (!m_waypoints.empty())
+		{
+			// If NPC not moving, start moving to the first waypoint
+			if (pWorker->GetSpeed() < 1)
+			{
+				pWorker->SetSpeed(250);
+				
+				pWorker->SetDirection(m_waypoints.front() - pWorker->GetPosition());
+				if ((pWorker->GetDirection() > 0 && pWorker->GetDirection() < 90) || (pWorker->GetDirection() < 0) && (pWorker->GetDirection() > -90))
+					pWorker->SetAnimation("walkR");
+				else
+					pWorker->SetAnimation("walkL");
+			}
+			
+			// Passed the waypoint?
+			CVector v = m_waypoints.front() - pWorker->GetPosition();
+			if (Dot(pWorker->GetVelocity(), v) < 0)
+			{
+				// Stop movement
+				m_waypoints.pop_front();
+				if (m_waypoints.empty()) {
+					if ((pWorker->GetDirection() > 0 && pWorker->GetDirection() < 90) || (pWorker->GetDirection() < 0) && (pWorker->GetDirection() > -90))
+						pWorker->SetAnimation("idleR");
+					else
+						pWorker->SetAnimation("idleL");
+					pWorker->SetVelocity(0, 0);
+					pWorker->SetRotation(0);
+				}
+			}
+		}
+	}
+
 	for (CTree* pTree : m_trees)
 		pTree->Update(t);
 	for (CWorker* pWorker : m_workers)
@@ -86,17 +123,17 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_ui.for_each(&CSprite::Draw, g);
 
 	// Change boolean values for debugging
-	if (true) {
+	if (false) {
 		m_pathfinder.draw(g);
 	}
-	if (true) {
+	if (false) {
 		for (int i = 0; i < 10; i++) {
 			g->DrawLine(CVector(i * 64.f, 10 * 64.f), CVector(i * 64.f, 0), CColor::Black());
 			g->DrawLine(CVector(10 * 64.f, i * 64.f), CVector(0, i * 64.f), CColor::Black());
 		}
 	}
 
-	// *g << font("ANCIENT.ttf", 40) << color(CColor::White()) << xy(355.f, 30.f) << m_money << endl;
+	*g << font("ARIAL.ttf", 40) << color(CColor::White()) << vcenter << center << m_testing << endl;
 }
 
 /////////////////////////////////////////////////////
@@ -169,7 +206,10 @@ void CMyGame::OnInitialize()
 		}
 
 	// Create a single worker (temporary)
-	m_workers.push_back(new CWorker(2 * 64.f + 32.f, 1 * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red.png"), 0));
+	m_workers.push_back(new CWorker(2 * 64.f + 32.f, 1 * 64.f + 32.f,
+		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Left.png"),
+		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Right.png"),
+		0));
 
 	// Create UI
 	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));
@@ -218,8 +258,20 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
 	if (sym == SDLK_F4 && (mod & (KMOD_LALT | KMOD_RALT)))
 		StopGame();
-	if (sym == SDLK_SPACE)
-		PauseGame();
+	if (sym == SDLK_SPACE) {
+		// PauseGame();
+		m_cnt++;
+		// call the path finding algorithm to complete the waypoints
+		vector<CVector> path;
+		if (m_cnt % 2 == 1) {
+			m_pathfinder.dijkstra(CVector(1, 2), CVector(7, 8), path);
+		} else {
+			m_pathfinder.dijkstra(CVector(7, 8), CVector(1, 2), path);
+		}
+		for (CVector pos : path) {
+			m_waypoints.push_back(pos);
+		}
+	}
 	if (sym == SDLK_F2)
 		NewGame();
 }
