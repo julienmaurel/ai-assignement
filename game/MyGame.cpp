@@ -85,6 +85,10 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_workers.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
+	// Change boolean values for debugging
+	if (true) {
+		m_pathfinder.draw(g);
+	}
 	if (true) {
 		for (int i = 0; i < 10; i++) {
 			g->DrawLine(CVector(i * 64.f, 10 * 64.f), CVector(i * 64.f, 0), CColor::Black());

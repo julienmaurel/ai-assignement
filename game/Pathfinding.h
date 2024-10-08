@@ -12,10 +12,12 @@ struct NODE {
 
 class Pathfinding
 {
-	bool m_obstacles[10][10];
-	vector<NODE> m_graph;
+	public:
+		bool m_obstacles[10][10];
+		vector<NODE> m_graph;
 
-	Pathfinding();
-	void setObstacles(bool obstacle[10][10]);
-	void initialize();
+		Pathfinding();
+		void setObstacles(bool obstacle[10][10]);
+		void initialize();
+		void draw(CGraphics* g);
 };

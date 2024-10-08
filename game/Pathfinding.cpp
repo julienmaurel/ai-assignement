@@ -16,17 +16,38 @@ void Pathfinding::setObstacles(bool obstacles[10][10])
 
 void Pathfinding::initialize() 
 {
-	for (int ) 
+	for (int i = 0; i < 10; i++)
+		for (int j = 0; j < 10; j++) 
 	{
 		m_graph.push_back(NODE{ CVector(32.f + i * 64.f, 32.f + j * 64.f) });
 	}
-	for () 
+	for (int i = 0; i < 10; i++)
+		for (int j = 0; j < 10; j++)
 	{
-		int index1 = *p[0];
-		int index2 = *p[1];
-		NODE& node1 = m_graph[index1];
-		NODE& node2 = m_graph[index2];
-		node1.conlist.push_back(CONNECTION{ index2, 1 });
-		node2.conlist.push_back(CONNECTION{ index1, 1 });
+		NODE& current_node = m_graph[i * 10 + j];
+		if (i != 0 && j != 0 && i != 9 && j != 9) {
+			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
+			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
+			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
+			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
+		}
+	}
+}
+
+void Pathfinding::draw(CGraphics* g) {
+	for (int i = 0; i < 100; i++) {
+
+		// Draw nodes
+		g->FillCircle(CVector(m_graph.at(i).pos.GetX(), m_graph.at(i).pos.GetY()), 5, CColor::Red());
+
+		// Draw connections (some twice but nvm)
+		for (CONNECTION& connection : m_graph.at(i).conlist) {
+			CVector target = m_graph.at(connection.nEnd).pos;
+			g->DrawLine(CVector(m_graph.at(i).pos.GetX(), m_graph.at(i).pos.GetY()), CVector(target.GetX(),target.GetY()), CColor::Red());
+		}
 	}
 }

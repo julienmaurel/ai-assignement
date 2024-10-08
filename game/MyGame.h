@@ -6,7 +6,7 @@
 #include "Worker.h"
 #include "Pathfinding.h"
 
-const string REPOSITORY = "C:/Users/k2448765/source/repos/ai-assignement";
+const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";
 
 #define GROUND(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Flat.png", 10, 4, col, row), 0)
 enum TileType {
