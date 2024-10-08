@@ -9,6 +9,8 @@
 const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";
 
 #define GROUND(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Flat.png", 10, 4, col, row), 0)
+#define ELEVATION(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Elevation.png", 4, 8, col, row), 0)
+#define SHADOW(x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Shadows.png"), 0)
 enum TileType {
 	NO_T,
 	G,
@@ -20,6 +22,10 @@ enum TileType {
 	BL_G,
 	BR_G,
 	B_G,
+	S_E,
+	S_G,
+	S_EG,
+	S,
 };
 
 enum BuildingType {
@@ -34,7 +40,7 @@ enum ResourceType {
 
 class CMyGame : public CGame
 {
-	TileType m_tileLayout[10][10];
+	string m_tileLayout[10][10];
 	BuildingType m_buildingLayout[10][10];
 	ResourceType m_resourceLayout[10][10];
 	bool m_obstacleLayout[10][10];
@@ -56,6 +62,10 @@ class CMyGame : public CGame
 public:
 	CMyGame(void);
 	~CMyGame(void);
+
+	// Utils
+	vector<string> split(string& s, const string& delimiter);
+	TileType stringcodeToTileType(string const& inString);
 
 	// Per-Frame Callback Funtions (must be implemented!)
 	virtual void OnUpdate();

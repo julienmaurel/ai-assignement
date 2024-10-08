@@ -6,19 +6,19 @@
 #pragma warning(disable:4244)
 
 CMyGame::CMyGame(void) :
-	m_tileLayout
-		{
-			{BL_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, L_G, TL_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{B_G, G, G, G, G, G, G, G, G, T_G},
-			{BR_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, R_G, TR_G}
-		},
+m_tileLayout
+	{
+		{"BL_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "TL_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "S G S_E", "G S_EG", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
+		{"BR_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "TR_G"}
+	},
 m_buildingLayout
 	{
 		{HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
@@ -68,13 +68,48 @@ CMyGame::~CMyGame(void)
 }
 
 /////////////////////////////////////////////////////
+// Utils
+
+vector<string> CMyGame::split(string& s, const string& delimiter) {
+	vector<string> tokens;
+	size_t pos = 0;
+	string token;
+	while ((pos = s.find(delimiter)) != string::npos) {
+		token = s.substr(0, pos);
+		tokens.push_back(token);
+		s = s.substr(pos + delimiter.length());
+	}
+	tokens.push_back(s);
+
+	return tokens;
+}
+
+TileType CMyGame::stringcodeToTileType(string const& inString) {
+	if (inString == "NO_T") return NO_T;
+	if (inString == "G") return G;
+	if (inString == "T_G") return T_G;
+	if (inString == "TR_G") return TR_G;
+	if (inString == "TL_G") return TL_G;
+	if (inString == "L_G") return L_G;
+	if (inString == "R_G") return R_G;
+	if (inString == "BL_G") return BL_G;
+	if (inString == "BR_G") return BR_G;
+	if (inString == "B_G") return B_G;
+	if (inString == "S_E") return S_E;
+	if (inString == "S_G") return S_G;
+	if (inString == "S_EG") return S_EG;
+	if (inString == "S") return S;
+	return NO_T;
+}
+
+/////////////////////////////////////////////////////
 // Per-Frame Callback Funtions (must be implemented!)
 
 void CMyGame::OnUpdate()
 {
 	Uint32 t = GetTime();
 
-	// NPC : follow the waypoints
+	// NPCs : follow their waypoints
 	for (CWorker* pWorker : m_workers) {
 		if (!m_waypoints.empty())
 		{
@@ -90,7 +125,7 @@ void CMyGame::OnUpdate()
 					pWorker->SetAnimation("walkL");
 			}
 			
-			// Passed the waypoint?
+			// Passed the waypoint ?
 			CVector v = m_waypoints.front() - pWorker->GetPosition();
 			if (Dot(pWorker->GetVelocity(), v) < 0)
 			{
@@ -122,11 +157,13 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_workers.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
-	// Change boolean values for debugging
-	if (false) {
+	// Change boolean values here for debugging
+	// Draw Dijkstra graph
+	if (true) {
 		m_pathfinder.draw(g);
 	}
-	if (false) {
+	// Draw grid
+	if (true) {
 		for (int i = 0; i < 10; i++) {
 			g->DrawLine(CVector(i * 64.f, 10 * 64.f), CVector(i * 64.f, 0), CColor::Black());
 			g->DrawLine(CVector(10 * 64.f, i * 64.f), CVector(0, i * 64.f), CColor::Black());
@@ -146,7 +183,9 @@ void CMyGame::OnInitialize()
 	for (int y = 0; y < 10; y++)
 		for (int x = 0; x < 10; x++)
 		{
-			switch (m_tileLayout[x][y]) {
+			vector<string> layers = split(m_tileLayout[x][y], " ");
+			for (string layer : layers) {
+				switch (stringcodeToTileType(layer)) {
 				case G:
 					m_tiles.push_back(GROUND(1, 2, x, y));
 					break;
@@ -174,8 +213,21 @@ void CMyGame::OnInitialize()
 				case BR_G:
 					m_tiles.push_back(GROUND(2, 1, x, y));
 					break;
+				case S_G:
+					m_tiles.push_back(GROUND(3, 0, x, y));
+					break;
+				case S_E:
+					m_tiles.push_back(ELEVATION(3, 2, x, y));
+					break;
+				case S_EG:
+					m_tiles.push_back(ELEVATION(3, 3, x, y));
+					break;
+				case S:
+					m_tiles.push_back(SHADOW(x, y));
+					break;
 				default:
 					break;
+				}
 			}
 		}
 
