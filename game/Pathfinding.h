@@ -1,6 +1,6 @@
 #pragma once
 
-#define OBSTACLE(x) m_obstacles[j][i].find(#x) == string::npos
+#define OBSTACLE(i, j, x) (m_obstacles[j][i].find(#x) != string::npos)
 
 struct CONNECTION {
 	int nEnd;
@@ -8,8 +8,14 @@ struct CONNECTION {
 };
 
 struct NODE {
+	int row;
+	int col;
 	CVector pos;
 	list<CONNECTION> conlist;
+
+	float costSoFar;
+	int nConnection;
+	bool open, closed;
 };
 
 class Pathfinding
@@ -19,8 +25,9 @@ class Pathfinding
 		vector<NODE> m_graph;
 
 		Pathfinding();
+		int findNode(int i, int j);
 		void setObstacles(string obstacle[10][10]);
 		void initialize();
 		void draw(CGraphics* g);
-		bool dijkstra(CVector start, CVector goal, vector<CVector>& path);
+		bool dijkstra(int nStart, int nGoal, vector<int>& path);
 };

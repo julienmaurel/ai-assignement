@@ -174,8 +174,6 @@ void CMyGame::OnDraw(CGraphics* g)
 			g->DrawLine(CVector(10 * 64.f, i * 64.f), CVector(0, i * 64.f), CColor::Black());
 		}
 	}
-
-	*g << font("ARIAL.ttf", 40) << color(CColor::White()) << vcenter << center << m_testing << endl;
 }
 
 /////////////////////////////////////////////////////
@@ -317,16 +315,39 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		StopGame();
 	if (sym == SDLK_SPACE) {
 		// PauseGame();
+
+		vector<NODE> graph = m_pathfinder.m_graph;
 		m_cnt++;
-		// call the path finding algorithm to complete the waypoints
-		vector<CVector> path;
-		if (m_cnt % 2 == 1) {
-			m_pathfinder.dijkstra(CVector(1, 2), CVector(7, 8), path);
-		} else {
-			m_pathfinder.dijkstra(CVector(7, 8), CVector(1, 2), path);
+		CVector destination;
+		if (m_cnt % 2 == 1) 
+		{
+			destination = CVector(32.f + 7 * 64.f + 10.f, 32.f + 8 * 64.f + 10.f);
 		}
-		for (CVector pos : path) {
-			m_waypoints.push_back(pos);
+		else {
+			destination = CVector(32.f + 2 * 64.f + 10.f, 32.f + 1 * 64.f + 10.f);
+		}
+		
+		// Find the first node : the closest to the NPC
+		vector<NODE>::iterator iFirst =
+			min_element(graph.begin(), graph.end(), [this](NODE& n1, NODE& n2) -> bool {
+				return Distance(n1.pos, m_workers.front()->GetPos()) < Distance(n2.pos, m_workers.front()->GetPos());
+			});
+		int nFirst = iFirst - graph.begin();
+
+		// Find the last node : the closest to the destination
+		vector<NODE>::iterator iLast =
+			min_element(graph.begin(), graph.end(), [destination](NODE& n1, NODE& n2) -> bool {
+				return Distance(n1.pos, destination) < Distance(n2.pos, destination);
+			});
+		int nLast = iLast - graph.begin();
+
+		// call the path finding algorithm to complete the waypoints
+		vector<int> path;
+		if (m_pathfinder.dijkstra(nFirst, nLast, path)) 
+		{
+			for (int i : path)
+				m_waypoints.push_back(m_pathfinder.m_graph[i].pos);
+			m_waypoints.push_back(destination);
 		}
 	}
 	if (sym == SDLK_F2)
