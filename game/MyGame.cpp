@@ -100,10 +100,40 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 	if (inString == "BL_G") return BL_G;
 	if (inString == "BR_G") return BR_G;
 	if (inString == "B_G") return B_G;
-	if (inString == "S_E") return S_E;
-	if (inString == "S_G") return S_G;
-	if (inString == "S_EG") return S_EG;
+	if (inString == "SOLE_G") return SOLE_G;
 	if (inString == "S") return S;
+	if (inString == "T_S") return T_S;
+	if (inString == "TR_S") return TR_S;
+	if (inString == "TL_S") return TL_S;
+	if (inString == "L_S") return L_S;
+	if (inString == "R_S") return R_S;
+	if (inString == "BL_S") return BL_S;
+	if (inString == "BR_S") return BR_S;
+	if (inString == "B_S") return B_S;
+	if (inString == "SOLE_S") return SOLE_S;
+	if (inString == "E") return E;
+	if (inString == "L_E") return L_E;
+	if (inString == "R_E") return R_E;
+	if (inString == "SOLE_E") return SOLE_E;
+	if (inString == "EG") return EG;
+	if (inString == "T_EG") return T_EG;
+	if (inString == "TR_EG") return TR_EG;
+	if (inString == "TL_EG") return TL_EG;
+	if (inString == "L_EG") return L_EG;
+	if (inString == "R_EG") return R_EG;
+	if (inString == "BL_EG") return BL_EG;
+	if (inString == "BR_EG") return BR_EG;
+	if (inString == "B_EG") return B_EG;
+	if (inString == "SOLE_EG") return SOLE_EG;
+	if (inString == "ST") return ST;
+	if (inString == "L_ST") return L_ST;
+	if (inString == "R_ST") return R_ST;
+	if (inString == "SOLE_ST") return SOLE_ST;
+	if (inString == "SH") return SH;
+	if (inString == "GR") return GR;
+	if (inString == "DU") return DU;
+	if (inString == "W") return W;
+	if (inString == "F") return W;
 	return NO_T;
 }
 
@@ -146,6 +176,8 @@ void CMyGame::OnUpdate()
 		}
 	}
 
+	for (CSprite* pSprite : m_foamTiles)
+		pSprite->Update(t);
 	for (CTree* pTree : m_trees)
 		pTree->Update(t);
 	for (CWorker* pWorker : m_workers)
@@ -154,6 +186,7 @@ void CMyGame::OnUpdate()
 
 void CMyGame::OnDraw(CGraphics* g)
 {
+	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
 	m_workers.for_each(&CSprite::Draw, g);
 	m_buildings.for_each(&CSprite::Draw, g);
@@ -214,18 +247,109 @@ void CMyGame::OnInitialize()
 				case BR_G:
 					m_tiles.push_back(GROUND(2, 1, x, y));
 					break;
-				case S_G:
+				case SOLE_G:
 					m_tiles.push_back(GROUND(3, 0, x, y));
 					break;
-				case S_E:
+				case S:
+					m_tiles.push_back(GROUND(6, 2, x, y));
+					break;
+				case T_S:
+					m_tiles.push_back(GROUND(6, 3, x, y));
+					break;
+				case B_S:
+					m_tiles.push_back(GROUND(6, 1, x, y));
+					break;
+				case L_S:
+					m_tiles.push_back(GROUND(5, 2, x, y));
+					break;
+				case R_S:
+					m_tiles.push_back(GROUND(7, 2, x, y));
+					break;
+				case TL_S:
+					m_tiles.push_back(GROUND(5, 3, x, y));
+					break;
+				case TR_S:
+					m_tiles.push_back(GROUND(7, 3, x, y));
+					break;
+				case BL_S:
+					m_tiles.push_back(GROUND(5, 1, x, y));
+					break;
+				case BR_S:
+					m_tiles.push_back(GROUND(7, 1, x, y));
+					break;
+				case SOLE_S:
+					m_tiles.push_back(GROUND(8, 0, x, y));
+					break;
+				case E:
+					m_tiles.push_back(ELEVATION(1, 2, x, y));
+					break;
+				case L_E:
+					m_tiles.push_back(ELEVATION(0, 2, x, y));
+					break;
+				case R_E:
+					m_tiles.push_back(ELEVATION(2, 2, x, y));
+					break;
+				case SOLE_E:
 					m_tiles.push_back(ELEVATION(3, 2, x, y));
 					break;
-				case S_EG:
+				case EG:
+					m_tiles.push_back(ELEVATION(1, 6, x, y));
+					break;
+				case T_EG:
+					m_tiles.push_back(ELEVATION(1, 7, x, y));
+					break;
+				case B_EG:
+					m_tiles.push_back(ELEVATION(1, 5, x, y));
+					break;
+				case L_EG:
+					m_tiles.push_back(ELEVATION(0, 6, x, y));
+					break;
+				case R_EG:
+					m_tiles.push_back(ELEVATION(2, 6, x, y));
+					break;
+				case TL_EG:
+					m_tiles.push_back(ELEVATION(0, 7, x, y));
+					break;
+				case TR_EG:
+					m_tiles.push_back(ELEVATION(2, 7, x, y));
+					break;
+				case BL_EG:
+					m_tiles.push_back(ELEVATION(0, 5, x, y));
+					break;
+				case BR_EG:
+					m_tiles.push_back(ELEVATION(2, 5, x, y));
+					break;
+				case SOLE_EG:
 					m_tiles.push_back(ELEVATION(3, 3, x, y));
 					break;
-				case S:
+				case ST:
+					m_tiles.push_back(ELEVATION(1, 0, x, y));
+					break;
+				case L_ST:
+					m_tiles.push_back(ELEVATION(0, 0, x, y));
+					break;
+				case R_ST:
+					m_tiles.push_back(ELEVATION(2, 0, x, y));
+					break;
+				case SOLE_ST:
+					m_tiles.push_back(ELEVATION(3, 0, x, y));
+					break;
+				case SH:
 					m_tiles.push_back(SHADOW(x, y));
 					break;
+				case GR:
+					m_tiles.push_back(GROUND(4, 3, x, y));
+					break;
+				case DU:
+					m_tiles.push_back(GROUND(9, 3, x, y));
+					break;
+				case W:
+					m_tiles.push_back(WATER(x, y));
+				case F:
+					CSprite *foamSprite = new CSprite(32.f + x * 64.f, 32.f + y * 64.f, 0, 0, 0);
+					foamSprite->LoadAnimation(new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Water/Foam/Foam.png"), "foam", CSprite::Sheet(8, 1).Row(0).From(0).To(7));
+					foamSprite->SetAnimation("foam");
+					m_foamTiles.push_back(foamSprite);
 				default:
 					break;
 				}

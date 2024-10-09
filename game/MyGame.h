@@ -8,9 +8,11 @@
 
 const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";
 
+// TODO : Add rocks and bridges
 #define GROUND(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Flat.png", 10, 4, col, row), 0)
 #define ELEVATION(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Elevation.png", 4, 8, col, row), 0)
 #define SHADOW(x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Shadows.png"), 0)
+#define WATER(x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Water/Water.png"), 0)
 enum TileType {
 	NO_T,
 	G,
@@ -22,10 +24,40 @@ enum TileType {
 	BL_G,
 	BR_G,
 	B_G,
-	S_E,
-	S_G,
-	S_EG,
+	SOLE_G,
 	S,
+	T_S,
+	TR_S,
+	TL_S,
+	L_S,
+	R_S,
+	BL_S,
+	BR_S,
+	B_S,
+	SOLE_S,
+	E,
+	L_E,
+	R_E,
+	SOLE_E,
+	EG,
+	T_EG,
+	TR_EG,
+	TL_EG,
+	L_EG,
+	R_EG,
+	BL_EG,
+	BR_EG,
+	B_EG,
+	SOLE_EG,
+	ST,
+	L_ST,
+	R_ST,
+	SOLE_ST,
+	SH,
+	GR,
+	DU,
+	W,
+	F
 };
 
 enum BuildingType {
@@ -46,6 +78,7 @@ class CMyGame : public CGame
 	string m_obstacleLayout[10][10];
 
 	CSpriteList m_tiles;
+	CSpriteList m_foamTiles;
 	CSpriteList m_buildings;
 	CTreeList m_trees;
 	CWorkerList m_workers;
