@@ -6,6 +6,8 @@
 #pragma warning(disable:4244)
 
 CMyGame::CMyGame(void) :
+
+// Each cell can contain several layers. (Exemple : S G S_E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
 m_tileLayout
 	{
 		{"BL_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "TL_G"},
@@ -45,18 +47,21 @@ m_resourceLayout
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 	},
+
+// The obstacle layout specifies the connections to remove from each cell in the pathfinding graph, the connections are removed anti-clockwise.
+// (Exemple : "03" means the first and fourth connections are removed i.e the right and upper-left-diagonal ones)
 m_obstacleLayout
 	{
-		{true, true, true, false, false, false, false, false, false, false},
-		{true, true, true, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, false, false, false},
-		{false, false, false, false, false, false, false, true, true, true},
-		{false, false, false, false, false, false, false, true, true, true},
+		{"01234567", "01234567", "01234567", "67", "", "", "", "", "", ""},
+		{"01234567", "01234567", "01234567", "56", "", "", "", "", "", ""},
+		{"34", "345", "45", "5", "", "", "", "", "", ""},
+		{"", "", "", "", "", "", "", "", "", ""},
+		{"", "", "", "1", "01", "07", "7", "", "", ""},
+		{"", "", "", "2", "01234567", "01234567", "6", "", "", ""},
+		{"", "", "", "3", "34", "45", "5", "", "", ""},
+		{"", "", "", "", "", "", "", "", "", ""},
+		{"", "", "", "", "", "", "", "", "", ""},
+		{"", "", "", "", "", "", "", "", "", ""},
 	}
 {
 }
@@ -152,9 +157,9 @@ void CMyGame::OnUpdate()
 void CMyGame::OnDraw(CGraphics* g)
 {
 	m_tiles.for_each(&CSprite::Draw, g);
+	m_workers.for_each(&CSprite::Draw, g);
 	m_buildings.for_each(&CSprite::Draw, g);
 	m_trees.for_each(&CSprite::Draw, g);
-	m_workers.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
 	// Change boolean values here for debugging

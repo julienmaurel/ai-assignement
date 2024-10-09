@@ -5,7 +5,7 @@ Pathfinding::Pathfinding()
 {
 }
 
-void Pathfinding::setObstacles(bool obstacles[10][10]) 
+void Pathfinding::setObstacles(string obstacles[10][10]) 
 {
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
@@ -26,54 +26,54 @@ void Pathfinding::initialize()
 	{
 		NODE& current_node = m_graph[i * 10 + j];
 		if (i != 0 && j != 0 && i != 9 && j != 9) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(3)) current_node.conlist.push_back(CONNECTION{(i + 1) * 10 + (j - 1), 1});
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(1)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(5)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(7)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
 		} else if (i == 0 && j == 0) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(1)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
 		} else if (i == 0 && j == 9) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(3)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
 		} else if (i == 9 && j == 0) {
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(7)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
 		} else if (i == 9 && j == 9) {
-			current_node.conlist.push_back(CONNECTION{ (i) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(5)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
 		} else if (i == 0) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(3)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(1)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
 		} else if (j == 0) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(1)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(7)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
 		} else if (i == 9) {
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(0)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j + 1), 1 });
+			if (OBSTACLE(5)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(7)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j + 1), 1 });
 		} else if (j == 9) {
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
-			current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
-			current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
+			if (OBSTACLE(3)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(2)) current_node.conlist.push_back(CONNECTION{ (i + 1) * 10 + j, 1 });
+			if (OBSTACLE(4)) current_node.conlist.push_back(CONNECTION{ i * 10 + (j - 1), 1 });
+			if (OBSTACLE(5)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + (j - 1), 1 });
+			if (OBSTACLE(6)) current_node.conlist.push_back(CONNECTION{ (i - 1) * 10 + j, 1 });
 		}
 	}
 }

@@ -43,7 +43,7 @@ class CMyGame : public CGame
 	string m_tileLayout[10][10];
 	BuildingType m_buildingLayout[10][10];
 	ResourceType m_resourceLayout[10][10];
-	bool m_obstacleLayout[10][10];
+	string m_obstacleLayout[10][10];
 
 	CSpriteList m_tiles;
 	CSpriteList m_buildings;
