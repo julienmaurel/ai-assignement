@@ -65,7 +65,7 @@ void Pathfinding::draw(CGraphics* g) {
 			CVector target = m_graph.at(connection.nEnd).pos;
 			CVector middle = CVector((n.pos.GetX() + target.GetX()) / 2, (n.pos.GetY() + target.GetY()) / 2);
 			// Print weights
-			// *g << font("ARIAL.ttf", 10) << color(CColor::White()) << xy(middle.GetX(), middle.GetY()) << connection.cost << endl;
+			// *g << font("ARIAL.ttf", 5) << color(CColor::White()) << xy(middle.GetX(), middle.GetY()) << connection.cost << endl;
 			g->DrawLine(CVector(n.pos.GetX(), n.pos.GetY()), CVector(target.GetX(),target.GetY()), CColor::Red());
 		}
 	}

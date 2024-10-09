@@ -137,13 +137,11 @@ void CMyGame::OnUpdate()
 				// Stop movement
 				m_waypoints.pop_front();
 				if (m_waypoints.empty()) {
-					if ((pWorker->GetDirection() > 0 && pWorker->GetDirection() < 90) || (pWorker->GetDirection() < 0) && (pWorker->GetDirection() > -90))
-						pWorker->SetAnimation("idleR");
-					else
-						pWorker->SetAnimation("idleL");
-					pWorker->SetVelocity(0, 0);
-					pWorker->SetRotation(0);
+					pWorker->SetAnimation("idleR");
 				}
+				pWorker->SetVelocity(0, 0);
+				pWorker->SetRotation(0);
+				
 			}
 		}
 	}
@@ -321,10 +319,10 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 		CVector destination;
 		if (m_cnt % 2 == 1) 
 		{
-			destination = CVector(32.f + 7 * 64.f + 10.f, 32.f + 8 * 64.f + 10.f);
+			destination = CVector(32.f + 8 * 64.f, 32.f + 7 * 64.f);
 		}
 		else {
-			destination = CVector(32.f + 2 * 64.f + 10.f, 32.f + 1 * 64.f + 10.f);
+			destination = CVector(32.f + 2 * 64.f, 32.f + 1 * 64.f);
 		}
 		
 		// Find the first node : the closest to the NPC
