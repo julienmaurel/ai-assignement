@@ -7,24 +7,24 @@
 
 CMyGame::CMyGame(void) :
 
-// Each cell can contain several layers. (Exemple : S G S_E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
+// Each cell can contain several layers. (Exemple : SH G E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
 m_tileLayout
 	{
-		{"BL_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "L_G", "TL_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "S G S_E", "G S_EG", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"B_G", "G", "G", "G", "G", "G", "G", "G", "G", "T_G"},
-		{"BR_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "R_G", "TR_G"}
+		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
+		{"W", "F BL_S", "F L_S", "F L_S", "F L_S", "F L_S", "F L_S", "F L_S", "F TL_S", "W"},
+		{"W", "F B_S", "S", "S", "S L_E DU", "BL_EG BL_G", "L_EG L_G", "S TL_G", "F T_S", "W"},
+		{"W", "F B_S", "S", "S SOLE_ST DU", "BL_EG BL_S", "G DU", "G L_E GR", "G SOLEL_EG SOLEL_G", "F T_S", "W"},
+		{"W", "F B_S", "S L_E DU", "BL_EG BL_S", "S", "S L_E", "BL_EG BL_G", "G T_G", "F T_S", "W"},
+		{"W", "F B_S", "S L_E DU", "B_EG B_S", "S L_E", "BL_EG BL_G", "G R_G", "G TR_G", "F T_S", "W"},
+		{"W", "F B_S", "S E", "B_EG B_S", "G SOLE_ST GR", "G SOLER_EG SOLER_G", "G", "S TR_G", "F T_S", "W"},
+		{"W", "F B_S", "S SOLE_ST DU", "BR_EG BR_S", "R_EG R_G DU", "R_EG R_G", "S TR_G", "S", "F T_S", "W"},
+		{"W", "F BR_S", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F TR_S", "W"},
+		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
 	},
 m_buildingLayout
 	{
-		{HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+		{NO_B, HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
 		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
@@ -40,11 +40,11 @@ m_resourceLayout
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 	},
 
@@ -101,6 +101,8 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 	if (inString == "BR_G") return BR_G;
 	if (inString == "B_G") return B_G;
 	if (inString == "SOLE_G") return SOLE_G;
+	if (inString == "SOLEL_G") return SOLEL_G;
+	if (inString == "SOLER_G") return SOLER_G;
 	if (inString == "S") return S;
 	if (inString == "T_S") return T_S;
 	if (inString == "TR_S") return TR_S;
@@ -125,6 +127,8 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 	if (inString == "BR_EG") return BR_EG;
 	if (inString == "B_EG") return B_EG;
 	if (inString == "SOLE_EG") return SOLE_EG;
+	if (inString == "SOLEL_EG") return SOLEL_EG;
+	if (inString == "SOLER_EG") return SOLER_EG;
 	if (inString == "ST") return ST;
 	if (inString == "L_ST") return L_ST;
 	if (inString == "R_ST") return R_ST;
@@ -133,7 +137,7 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 	if (inString == "GR") return GR;
 	if (inString == "DU") return DU;
 	if (inString == "W") return W;
-	if (inString == "F") return W;
+	if (inString == "F") return F;
 	return NO_T;
 }
 
@@ -186,6 +190,7 @@ void CMyGame::OnUpdate()
 
 void CMyGame::OnDraw(CGraphics* g)
 {
+	m_waterTiles.for_each(&CSprite::Draw, g);
 	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
 	m_workers.for_each(&CSprite::Draw, g);
@@ -249,6 +254,12 @@ void CMyGame::OnInitialize()
 					break;
 				case SOLE_G:
 					m_tiles.push_back(GROUND(3, 0, x, y));
+					break;
+				case SOLEL_G:
+					m_tiles.push_back(GROUND(0, 0, x, y));
+					break;
+				case SOLER_G:
+					m_tiles.push_back(GROUND(2, 0, x, y));
 					break;
 				case S:
 					m_tiles.push_back(GROUND(6, 2, x, y));
@@ -322,6 +333,12 @@ void CMyGame::OnInitialize()
 				case SOLE_EG:
 					m_tiles.push_back(ELEVATION(3, 3, x, y));
 					break;
+				case SOLEL_EG:
+					m_tiles.push_back(ELEVATION(0, 3, x, y));
+					break;
+				case SOLER_EG:
+					m_tiles.push_back(ELEVATION(2, 3, x, y));
+					break;
 				case ST:
 					m_tiles.push_back(ELEVATION(1, 0, x, y));
 					break;
@@ -344,12 +361,16 @@ void CMyGame::OnInitialize()
 					m_tiles.push_back(GROUND(9, 3, x, y));
 					break;
 				case W:
-					m_tiles.push_back(WATER(x, y));
+					m_waterTiles.push_back(WATER(x, y));
+					break;
 				case F:
+					{
 					CSprite *foamSprite = new CSprite(32.f + x * 64.f, 32.f + y * 64.f, 0, 0, 0);
 					foamSprite->LoadAnimation(new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Water/Foam/Foam.png"), "foam", CSprite::Sheet(8, 1).Row(0).From(0).To(7));
 					foamSprite->SetAnimation("foam");
 					m_foamTiles.push_back(foamSprite);
+					}
+					break;
 				default:
 					break;
 				}
@@ -383,7 +404,7 @@ void CMyGame::OnInitialize()
 		}
 
 	// Create a single worker (temporary)
-	m_workers.push_back(new CWorker(2 * 64.f + 32.f, 1 * 64.f + 32.f,
+	m_workers.push_back(new CWorker(3 * 64.f + 32.f, 2 * 64.f + 32.f,
 		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Left.png"),
 		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Right.png"),
 		0));

@@ -25,6 +25,8 @@ enum TileType {
 	BR_G,
 	B_G,
 	SOLE_G,
+	SOLEL_G,
+	SOLER_G,
 	S,
 	T_S,
 	TR_S,
@@ -49,6 +51,8 @@ enum TileType {
 	BR_EG,
 	B_EG,
 	SOLE_EG,
+	SOLEL_EG,
+	SOLER_EG,
 	ST,
 	L_ST,
 	R_ST,
@@ -78,6 +82,7 @@ class CMyGame : public CGame
 	string m_obstacleLayout[10][10];
 
 	CSpriteList m_tiles;
+	CSpriteList m_waterTiles;
 	CSpriteList m_foamTiles;
 	CSpriteList m_buildings;
 	CTreeList m_trees;
