@@ -37,7 +37,7 @@ m_buildingLayout
 m_resourceLayout
 	{
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+		{NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
@@ -153,15 +153,15 @@ void CMyGame::gameLoop()
 void CMyGame::computeWorkerWaypoints() {
 
 	// Temporarily hard coded
-	CVector house = CVector(32.f + 3 * 64.f, 32.f + 2 * 64.f);
-	vector<CVector> trees = { CVector(32.f + 4 * 64.f, 32.f + 7 * 64.f), CVector(32.f + 6 * 64.f, 32.f + 6 * 64.f) };
+	CVector house = CVector(32.f + 1 * 64.f, 32.f + 1 * 64.f);
+	vector<CVector> trees = { CVector(32.f + 4 * 64.f, 32.f + 7 * 64.f), CVector(32.f + 6 * 64.f, 32.f + 6 * 64.f), CVector(32.f + 1 * 64.f, 32.f + 3 * 64.f) };
 	
 	// If the worker is idle, adds the necessary waypoints for the next task
 	if (m_waypoints.empty()) 
 	{
 		// Chose the new destination
 		CVector destination;
-		switch (m_currentTask % 3) 
+		switch (m_currentTask % 4) 
 		{
 		case 0:
 			destination = trees[0];
@@ -170,6 +170,9 @@ void CMyGame::computeWorkerWaypoints() {
 			destination = trees[1];
 			break;
 		case 2:
+			destination = trees[2];
+			break;
+		case 3:
 			destination = house;
 			break;
 		}
@@ -245,9 +248,9 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_waterTiles.for_each(&CSprite::Draw, g);
 	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
-	m_buildings.for_each(&CSprite::Draw, g);
 	m_trees.for_each(&CSprite::Draw, g);
 	m_workers.for_each(&CSprite::Draw, g);
+	m_buildings.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
 	// Change boolean values here for debugging
