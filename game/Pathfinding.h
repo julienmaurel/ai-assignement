@@ -30,4 +30,6 @@ class Pathfinding
 		void initialize();
 		void draw(CGraphics* g);
 		bool dijkstra(int nStart, int nGoal, vector<int>& path);
+		int findClosestNode(CVector position);
+		void addWaypoints(vector<int>& path, list<CVector>& waypoints);
 };

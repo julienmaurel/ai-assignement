@@ -90,12 +90,9 @@ class CMyGame : public CGame
 	CSpriteList m_ui;
 
 	Pathfinding m_pathfinder;
-	list<CVector> m_waypoints;//[1]
+	list<CVector> m_waypoints;
 
-	int m_money;
-
-	string m_testing;
-	int m_cnt;
+	int m_currentTask;
 
 public:
 	CMyGame(void);
@@ -104,6 +101,11 @@ public:
 	// Utils
 	vector<string> split(string& s, const string& delimiter);
 	TileType stringcodeToTileType(string const& inString);
+
+	// Gameplay
+	void gameLoop();
+	void computeWorkerWaypoints();
+	void workersWaypointing();
 
 	// Per-Frame Callback Funtions (must be implemented!)
 	virtual void OnUpdate();

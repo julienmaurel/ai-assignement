@@ -2,6 +2,8 @@
 
 class CWorker : public CSprite
 {
+	CVector m_position;
+
 public:
 	CWorker(Sint16 x, Sint16 y, CGraphics* pGraphicsLeft, CGraphics* pGraphicsRight, Uint32 time);
 	~CWorker(void);

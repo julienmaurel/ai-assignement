@@ -137,3 +137,18 @@ bool Pathfinding::dijkstra(int nStart, int nGoal, vector<int>& path) {
 	reverse(path.begin(), path.end());
 	return true;
 }
+ 
+int Pathfinding::findClosestNode(CVector position) 
+{
+	vector<NODE>::iterator iNode =
+		min_element(m_graph.begin(), m_graph.end(), [position](NODE& n1, NODE& n2) -> bool {
+		return Distance(n1.pos, position) < Distance(n2.pos, position);
+			});
+	return iNode - m_graph.begin();
+}
+
+void Pathfinding::addWaypoints(vector<int>& path, list<CVector>& waypoints)
+{
+	for (int i : path)
+		waypoints.push_back(m_graph[i].pos);
+}

@@ -7,18 +7,18 @@
 
 CMyGame::CMyGame(void) :
 
-// Each cell can contain several layers. (Exemple : SH G E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
+// Each cell can contain several layers. (Exemple : G SH E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
 m_tileLayout
 	{
 		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
-		{"W", "F BL_S", "F L_S", "F L_S", "F L_S", "F L_S", "F L_S", "F L_S", "F TL_S", "W"},
-		{"W", "F B_S", "S", "S", "S L_E DU", "BL_EG BL_G", "L_EG L_G", "S TL_G", "F T_S", "W"},
-		{"W", "F B_S", "S", "S SOLE_ST DU", "BL_EG BL_S", "G DU", "G L_E GR", "G SOLEL_EG SOLEL_G", "F T_S", "W"},
-		{"W", "F B_S", "S L_E DU", "BL_EG BL_S", "S", "S L_E", "BL_EG BL_G", "G T_G", "F T_S", "W"},
-		{"W", "F B_S", "S L_E DU", "B_EG B_S", "S L_E", "BL_EG BL_G", "G R_G", "G TR_G", "F T_S", "W"},
-		{"W", "F B_S", "S E", "B_EG B_S", "G SOLE_ST GR", "G SOLER_EG SOLER_G", "G", "S TR_G", "F T_S", "W"},
-		{"W", "F B_S", "S SOLE_ST DU", "BR_EG BR_S", "R_EG R_G DU", "R_EG R_G", "S TR_G", "S", "F T_S", "W"},
-		{"W", "F BR_S", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F TR_S", "W"},
+		{"W", "F BL_G", "F L_G", "F L_G", "F L_S DU", "F L_S", "F L_S", "F L_S", "F TL_S", "W"},
+		{"W", "F B_G", "G", "G", "G SH L_E GR", "SH BL_EG BL_G", "L_EG L_G", "S TL_G", "F T_S", "W"},
+		{"W", "F B_G", "G", "G SH SOLE_ST", "BL_EG BL_S", "G DU", "G SH L_E", "G SOLEL_EG SOLEL_G", "F T_S", "W"},
+		{"W", "F B_G", "G SH L_E GR", "BL_EG BL_S", "S", "G SH L_E DU", "BL_EG BL_G", "G T_G", "F T_S", "W"},
+		{"W", "F B_G", "G SH L_E GR", "B_EG B_S", "S SH L_E", "BL_EG BL_G", "G R_G", "G TR_G", "F T_S", "W"},
+		{"W", "F B_G", "G SH E", "B_EG B_S", "G SH SOLE_ST", "G SOLER_EG SOLER_G", "G", "S TR_G", "F T_S", "W"},
+		{"W", "F B_G", "G SH SOLE_ST GR", "BR_EG BR_S", "R_EG R_G DU", "R_EG R_G", "S TR_G", "S", "F T_S", "W"},
+		{"W", "F BR_G", "F R_S DU", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F TR_S", "W"},
 		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
 	},
 m_buildingLayout
@@ -65,12 +65,11 @@ m_obstacleLayout
 
 	}
 {
+	m_currentTask = 0;
 }
 
 CMyGame::~CMyGame(void)
 {
-	m_cnt = 0;
-	m_money = 10;
 }
 
 /////////////////////////////////////////////////////
@@ -143,44 +142,96 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 }
 
 /////////////////////////////////////////////////////
+// Gameplay
+
+void CMyGame::gameLoop() 
+{
+	computeWorkerWaypoints();
+	workersWaypointing();
+}
+
+void CMyGame::computeWorkerWaypoints() {
+
+	// Temporarily hard coded
+	CVector house = CVector(32.f + 3 * 64.f, 32.f + 2 * 64.f);
+	vector<CVector> trees = { CVector(32.f + 4 * 64.f, 32.f + 7 * 64.f), CVector(32.f + 6 * 64.f, 32.f + 6 * 64.f) };
+	
+	// If the worker is idle, adds the necessary waypoints for the next task
+	if (m_waypoints.empty()) 
+	{
+		// Chose the new destination
+		CVector destination;
+		switch (m_currentTask % 3) 
+		{
+		case 0:
+			destination = trees[0];
+			break;
+		case 1:
+			destination = trees[1];
+			break;
+		case 2:
+			destination = house;
+			break;
+		}
+		m_currentTask++;
+
+		// Use Dijkstra algorithm to add the waypoints
+		int nFirst = m_pathfinder.findClosestNode(m_workers.front()->GetPos());
+		int nLast = m_pathfinder.findClosestNode(destination);
+		vector<int> path;
+		if (m_pathfinder.dijkstra(nFirst, nLast, path))
+		{
+			m_pathfinder.addWaypoints(path, m_waypoints);
+			m_waypoints.push_back(destination);
+		}
+	}
+}
+
+void CMyGame::workersWaypointing() 
+{
+	CWorker* pWorker = m_workers.front();
+
+	// NPCs : follow their waypoints
+	if (!m_waypoints.empty())
+	{
+		// If NPC not moving, start moving to the first waypoint
+		if (pWorker->GetSpeed() < 1)
+		{
+			pWorker->SetSpeed(250);
+
+			pWorker->SetDirection(m_waypoints.front() - pWorker->GetPosition());
+			if (pWorker->GetDirection() > 10 && pWorker->GetDirection() < 180 - 10)
+				pWorker->SetAnimation("walkR");
+			else if (pWorker->GetDirection() < -10 && pWorker->GetDirection() > -180 + 10)
+				pWorker->SetAnimation("walkL");
+		}
+
+		// Passed the waypoint ?
+		CVector v = m_waypoints.front() - pWorker->GetPosition();
+		if (Dot(pWorker->GetVelocity(), v) < 0)
+		{
+			// Stop movement
+			m_waypoints.pop_front();
+			if (m_waypoints.empty()) {
+				pWorker->SetAnimation("idleR");
+			}
+			pWorker->SetVelocity(0, 0);
+			pWorker->SetRotation(0);
+
+		}
+	}
+}
+
+/////////////////////////////////////////////////////
 // Per-Frame Callback Funtions (must be implemented!)
 
 void CMyGame::OnUpdate()
 {
 	Uint32 t = GetTime();
 
-	// NPCs : follow their waypoints
-	for (CWorker* pWorker : m_workers) {
-		if (!m_waypoints.empty())
-		{
-			// If NPC not moving, start moving to the first waypoint
-			if (pWorker->GetSpeed() < 1)
-			{
-				pWorker->SetSpeed(250);
-				
-				pWorker->SetDirection(m_waypoints.front() - pWorker->GetPosition());
-				if ((pWorker->GetDirection() > 0 && pWorker->GetDirection() < 90) || (pWorker->GetDirection() < 0) && (pWorker->GetDirection() > -90))
-					pWorker->SetAnimation("walkR");
-				else
-					pWorker->SetAnimation("walkL");
-			}
-			
-			// Passed the waypoint ?
-			CVector v = m_waypoints.front() - pWorker->GetPosition();
-			if (Dot(pWorker->GetVelocity(), v) < 0)
-			{
-				// Stop movement
-				m_waypoints.pop_front();
-				if (m_waypoints.empty()) {
-					pWorker->SetAnimation("idleR");
-				}
-				pWorker->SetVelocity(0, 0);
-				pWorker->SetRotation(0);
-				
-			}
-		}
-	}
+	gameLoop();
 
+	// Updating sprites
 	for (CSprite* pSprite : m_foamTiles)
 		pSprite->Update(t);
 	for (CTree* pTree : m_trees)
@@ -194,18 +245,18 @@ void CMyGame::OnDraw(CGraphics* g)
 	m_waterTiles.for_each(&CSprite::Draw, g);
 	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
-	m_workers.for_each(&CSprite::Draw, g);
 	m_buildings.for_each(&CSprite::Draw, g);
 	m_trees.for_each(&CSprite::Draw, g);
+	m_workers.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
 	// Change boolean values here for debugging
 	// Draw Dijkstra graph
-	if (true) {
+	if (false) {
 		m_pathfinder.draw(g);
 	}
 	// Draw grid
-	if (true) {
+	if (false) {
 		for (int i = 0; i < 10; i++) {
 			g->DrawLine(CVector(i * 64.f, 10 * 64.f), CVector(i * 64.f, 0), CColor::Black());
 			g->DrawLine(CVector(10 * 64.f, i * 64.f), CVector(0, i * 64.f), CColor::Black());
@@ -457,43 +508,8 @@ void CMyGame::OnKeyDown(SDLKey sym, SDLMod mod, Uint16 unicode)
 {
 	if (sym == SDLK_F4 && (mod & (KMOD_LALT | KMOD_RALT)))
 		StopGame();
-	if (sym == SDLK_SPACE) {
-		// PauseGame();
-
-		vector<NODE> graph = m_pathfinder.m_graph;
-		m_cnt++;
-		CVector destination;
-		if (m_cnt % 2 == 1) 
-		{
-			destination = CVector(32.f + 8 * 64.f, 32.f + 7 * 64.f);
-		}
-		else {
-			destination = CVector(32.f + 2 * 64.f, 32.f + 1 * 64.f);
-		}
-		
-		// Find the first node : the closest to the NPC
-		vector<NODE>::iterator iFirst =
-			min_element(graph.begin(), graph.end(), [this](NODE& n1, NODE& n2) -> bool {
-				return Distance(n1.pos, m_workers.front()->GetPos()) < Distance(n2.pos, m_workers.front()->GetPos());
-			});
-		int nFirst = iFirst - graph.begin();
-
-		// Find the last node : the closest to the destination
-		vector<NODE>::iterator iLast =
-			min_element(graph.begin(), graph.end(), [destination](NODE& n1, NODE& n2) -> bool {
-				return Distance(n1.pos, destination) < Distance(n2.pos, destination);
-			});
-		int nLast = iLast - graph.begin();
-
-		// call the path finding algorithm to complete the waypoints
-		vector<int> path;
-		if (m_pathfinder.dijkstra(nFirst, nLast, path)) 
-		{
-			for (int i : path)
-				m_waypoints.push_back(m_pathfinder.m_graph[i].pos);
-			m_waypoints.push_back(destination);
-		}
-	}
+	if (sym == SDLK_SPACE) 
+		PauseGame();
 	if (sym == SDLK_F2)
 		NewGame();
 }
