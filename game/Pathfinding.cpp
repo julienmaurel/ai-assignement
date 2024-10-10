@@ -41,7 +41,7 @@ void Pathfinding::initialize()
 	{
 		int i = currentNode.row;
 		int j = currentNode.col;
-		int r = findNode(i, j + 1), ur = findNode(i + 1, j + 1), u = findNode(i + 1, j), ul = findNode(i + 1, j - 1), l = findNode(i - 1, j), bl = findNode(i - 1, j - 1), b = findNode(i - 1, j), br = findNode(i - 1, j + 1);
+		int r = findNode(i, j + 1), ur = findNode(i + 1, j + 1), u = findNode(i + 1, j), ul = findNode(i + 1, j - 1), l = findNode(i, j - 1), bl = findNode(i - 1, j - 1), b = findNode(i - 1, j), br = findNode(i - 1, j + 1);
 		if (r != -1 && !OBSTACLE(i, j, 0)) currentNode.conlist.push_back(CONNECTION{ r, Distance(currentNode.pos, m_graph[r].pos) });
 		if (ur != -1 && !OBSTACLE(i, j, 1)) currentNode.conlist.push_back(CONNECTION{ ur, Distance(currentNode.pos, m_graph[ur].pos) });
 		if (u != -1 && !OBSTACLE(i, j, 2)) currentNode.conlist.push_back(CONNECTION{ u, Distance(currentNode.pos, m_graph[u].pos) });
@@ -64,9 +64,11 @@ void Pathfinding::draw(CGraphics* g) {
 		for (CONNECTION& connection : n.conlist) {
 			CVector target = m_graph.at(connection.nEnd).pos;
 			CVector middle = CVector((n.pos.GetX() + target.GetX()) / 2, (n.pos.GetY() + target.GetY()) / 2);
+			CVector direction = CVector(n.pos.GetX() + (target.GetX() - n.pos.GetX()) * 0.75, n.pos.GetY() + (target.GetY() - n.pos.GetY()) * 0.75);
 			// Print weights
 			// *g << font("ARIAL.ttf", 5) << color(CColor::White()) << xy(middle.GetX(), middle.GetY()) << connection.cost << endl;
 			g->DrawLine(CVector(n.pos.GetX(), n.pos.GetY()), CVector(target.GetX(),target.GetY()), CColor::Red());
+			g->FillCircle(CVector(direction.GetX(), direction.GetY()), 2, CColor::Red());
 		}
 	}
 }
