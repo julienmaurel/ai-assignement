@@ -3,8 +3,6 @@
 
 CWorker::CWorker(Sint16 x, Sint16 y, CGraphics* pGraphicsLeft, CGraphics* pGraphicsRight, Uint32 time) : CSprite(x, y, 0, 0, time)
 {
-	m_position = CVector(x, y);
-
 	LoadAnimation(pGraphicsLeft, "idleL", CSprite::Sheet(6, 6).Row(5).From(0).To(5));
 	LoadAnimation(pGraphicsRight, "idleR", CSprite::Sheet(6, 6).Row(5).From(0).To(5));
 	LoadAnimation(pGraphicsLeft, "walkL", CSprite::Sheet(6, 6).Row(4).From(0).To(5));

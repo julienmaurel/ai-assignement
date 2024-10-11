@@ -5,17 +5,6 @@ Pathfinding::Pathfinding()
 {
 }
 
-int Pathfinding::findNode(int i, int j) {
-	int cnt = 0;
-	for (NODE& n : m_graph)
-	{
-		if (n.row == i && n.col == j)
-			return cnt;
-		cnt++;
-	}
-	return -1;
-}
-
 // Initialize obstacles layout (TODO : pass obstacles in constructor)
 void Pathfinding::setObstacles(string obstacles[10][10]) 
 {
@@ -137,7 +126,19 @@ bool Pathfinding::dijkstra(int nStart, int nGoal, vector<int>& path) {
 	reverse(path.begin(), path.end());
 	return true;
 }
- 
+
+
+int Pathfinding::findNode(int i, int j) {
+	int cnt = 0;
+	for (NODE& n : m_graph)
+	{
+		if (n.row == i && n.col == j)
+			return cnt;
+		cnt++;
+	}
+	return -1;
+}
+
 int Pathfinding::findClosestNode(CVector position) 
 {
 	vector<NODE>::iterator iNode =

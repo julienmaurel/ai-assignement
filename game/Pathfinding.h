@@ -20,10 +20,10 @@ struct NODE {
 
 class Pathfinding
 {
-	public:
-		string m_obstacles[10][10];
-		vector<NODE> m_graph;
+	string m_obstacles[10][10];
+	vector<NODE> m_graph;
 
+	public:
 		Pathfinding();
 		int findNode(int i, int j);
 		void setObstacles(string obstacle[10][10]);

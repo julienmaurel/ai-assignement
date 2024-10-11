@@ -53,9 +53,9 @@ m_resourceLayout
 m_obstacleLayout
 	{
 		{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
-		{"01234567", "01234567", "01234567", "01234567", "1", "10", "701", "701", "7", "01234567"},
-		{"01234567", "01234567", "01234567", "01234567", "01234567", "3457", "13457", "012345", "567", "01234567"},
-		{"01234567", "", "71", "01", "37", "137", "01234567", "123457", "567", "01234567"},
+		{"01234567", "01234567", "01234567", "134567", "17", "10", "701", "701", "7", "01234567"},
+		{"01234567", "01234567", "01234567", "0123567", "01234567", "3457", "13457", "012345", "567", "01234567"},
+		{"01234567", "", "713", "014", "375", "137", "01234567", "123457", "567", "01234567"},
 		{"01234567", "3", "01234567", "345", "1357", "01234567", "357", "123", "567", "01234567"},
 		{"01234567", "", "01234567", "13", "01234567", "1357", "017", "01237", "567", "01234567"},
 		{"01234567", "1", "01234567", "7", "0135", "01237", "134567", "0123457", "567", "01234567"},
@@ -153,7 +153,7 @@ void CMyGame::gameLoop()
 void CMyGame::computeWorkerWaypoints() {
 
 	// Temporarily hard coded
-	CVector house = CVector(32.f + 1 * 64.f, 32.f + 1 * 64.f);
+	CVector house = CVector(32.f + 2 * 64.f, 32.f + 1 * 64.f);
 	vector<CVector> trees = { CVector(32.f + 4 * 64.f, 32.f + 7 * 64.f), CVector(32.f + 6 * 64.f, 32.f + 6 * 64.f), CVector(32.f + 1 * 64.f, 32.f + 3 * 64.f) };
 	
 	// If the worker is idle, adds the necessary waypoints for the next task
@@ -245,11 +245,28 @@ void CMyGame::OnUpdate()
 
 void CMyGame::OnDraw(CGraphics* g)
 {
+
 	m_waterTiles.for_each(&CSprite::Draw, g);
 	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
-	m_trees.for_each(&CSprite::Draw, g);
-	m_workers.for_each(&CSprite::Draw, g);
+
+	// Temporary solution for layer bug
+	if ((m_workers.front()->GetX() > 4 * 64.f && m_workers.front()->GetY() > 8 * 64.f && m_workers.front()->GetX() < 8 * 64.f && m_workers.front()->GetY() < 9 * 64.f)
+		|| (m_workers.front()->GetX() > 7 * 64.f && m_workers.front()->GetY() > 7 * 64.f && m_workers.front()->GetX() < 8 * 64.f && m_workers.front()->GetY() < 8 * 64.f)
+		|| (m_workers.front()->GetX() > 4 * 64.f && m_workers.front()->GetY() > 8 * 64.f && m_workers.front()->GetX() < 6 * 64.f && m_workers.front()->GetY() < 9 * 64.f) 
+		|| (m_workers.front()->GetX() > 1 * 64.f && m_workers.front()->GetY() > 3 * 64.f && m_workers.front()->GetX() < 2 * 64.f && m_workers.front()->GetY() < 6 * 64.f)
+		|| (m_workers.front()->GetX() > 2 * 64.f && m_workers.front()->GetY() > 3 * 64.f && m_workers.front()->GetX() < 3 * 64.f && m_workers.front()->GetY() < 4 * 64.f)
+	   )
+	{
+		m_workers.for_each(&CSprite::Draw, g);
+		m_trees.for_each(&CSprite::Draw, g);
+	}
+	else 
+	{
+		m_trees.for_each(&CSprite::Draw, g);
+		m_workers.for_each(&CSprite::Draw, g);
+	}
+
 	m_buildings.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
 
