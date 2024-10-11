@@ -14,6 +14,11 @@ CWorker::~CWorker(void)
 {
 }
 
+int *CWorker::getCell(void) {
+	int cell[2] = { (int)(floor(GetY() / 64.f)), (int)(floor(GetX() / 64.f)) };
+	return cell;
+}
+
 void CWorker::OnUpdate(Uint32 time, Uint32 deltaTime)
 {
 	CSprite::OnUpdate(time, deltaTime);

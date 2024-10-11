@@ -5,65 +5,83 @@
 
 #pragma warning(disable:4244)
 
-CMyGame::CMyGame(void) :
+CMyGame::CMyGame(void) 
+	:
+		// Each cell can contain several layers. (Exemple : G SH E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
+		m_tileLayout
+			{
+				{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
+				{"W", "F BL_G", "F L_G", "F L_G", "F L_S DU", "F L_S", "F L_S", "F L_S", "F TL_S", "W"},
+				{"W", "F B_G", "G", "G", "G SH L_E GR", "SH BL_EG BL_G", "L_EG L_G", "S TL_G", "F T_S", "W"},
+				{"W", "F B_G", "G", "G SH SOLE_ST", "BL_EG BL_S", "G DU", "G SH L_E", "G SOLEL_EG SOLEL_G", "F T_S", "W"},
+				{"W", "F B_G", "G SH L_E GR", "BL_EG BL_S", "S", "G SH L_E DU", "BL_EG BL_G", "G T_G", "F T_S", "W"},
+				{"W", "F B_G", "G SH L_E GR", "B_EG B_S", "S SH L_E", "BL_EG BL_G", "G R_G", "G TR_G", "F T_S", "W"},
+				{"W", "F B_G", "G SH E", "B_EG B_S", "G SH SOLE_ST", "G SOLER_EG SOLER_G", "G", "S TR_G", "F T_S", "W"},
+				{"W", "F B_G", "G SH SOLE_ST GR", "BR_EG BR_S", "R_EG R_G DU", "R_EG R_G", "S TR_G", "S", "F T_S", "W"},
+				{"W", "F BR_G", "F R_S DU", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F TR_S", "W"},
+				{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
+			},
 
-// Each cell can contain several layers. (Exemple : G SH E represents the superposition of 1 shadow, 1 ground and 1 elevation in a single cell)
-m_tileLayout
-	{
-		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
-		{"W", "F BL_G", "F L_G", "F L_G", "F L_S DU", "F L_S", "F L_S", "F L_S", "F TL_S", "W"},
-		{"W", "F B_G", "G", "G", "G SH L_E GR", "SH BL_EG BL_G", "L_EG L_G", "S TL_G", "F T_S", "W"},
-		{"W", "F B_G", "G", "G SH SOLE_ST", "BL_EG BL_S", "G DU", "G SH L_E", "G SOLEL_EG SOLEL_G", "F T_S", "W"},
-		{"W", "F B_G", "G SH L_E GR", "BL_EG BL_S", "S", "G SH L_E DU", "BL_EG BL_G", "G T_G", "F T_S", "W"},
-		{"W", "F B_G", "G SH L_E GR", "B_EG B_S", "S SH L_E", "BL_EG BL_G", "G R_G", "G TR_G", "F T_S", "W"},
-		{"W", "F B_G", "G SH E", "B_EG B_S", "G SH SOLE_ST", "G SOLER_EG SOLER_G", "G", "S TR_G", "F T_S", "W"},
-		{"W", "F B_G", "G SH SOLE_ST GR", "BR_EG BR_S", "R_EG R_G DU", "R_EG R_G", "S TR_G", "S", "F T_S", "W"},
-		{"W", "F BR_G", "F R_S DU", "F R_S", "F R_S", "F R_S", "F R_S", "F R_S", "F TR_S", "W"},
-		{"W", "W", "W", "W", "W", "W", "W", "W", "W", "W"},
-	},
-m_buildingLayout
-	{
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
-		{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B}
-	},
-m_resourceLayout
-	{
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-		{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-	},
+		m_buildingLayout
+			{
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, HOUSE, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B},
+				{NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B, NO_B , NO_B}
+			},
 
-// The obstacle layout specifies the connections to remove from each cell in the pathfinding graph, the connections are removed anti-clockwise.
-// (Exemple : "03" means the first and fourth connections are removed i.e the right and upper-left-diagonal ones)
-m_obstacleLayout
-	{
-		{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
-		{"01234567", "01234567", "01234567", "134567", "17", "10", "701", "701", "7", "01234567"},
-		{"01234567", "01234567", "01234567", "0123567", "01234567", "3457", "13457", "012345", "567", "01234567"},
-		{"01234567", "", "713", "014", "375", "137", "01234567", "123457", "567", "01234567"},
-		{"01234567", "3", "01234567", "345", "1357", "01234567", "357", "123", "567", "01234567"},
-		{"01234567", "", "01234567", "13", "01234567", "1357", "017", "01237", "567", "01234567"},
-		{"01234567", "1", "01234567", "7", "0135", "01237", "134567", "0123457", "567", "01234567"},
-		{"01234567", "", "0135", "017", "70134", "701345", "701235", "34567", "5", "01234567"},
-		{"01234567", "", "34", "345", "345", "345", "345", "5", "", "01234567"},
-		{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
+		m_resourceLayout
+			{
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, TREE, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
+			},
 
-	}
+		m_accessibilityLayout
+			{
+				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f ,1.f},
+				{1.f, 1.f, 1.f, 1.f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 0.5f, 0.5f, 1.f, 1.f, 1.f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 0.5f, 0.5f ,1.f},
+				{1.f, 1.f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f ,1.f},
+				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f ,1.f},
+			},
+
+		// The obstacle layout specifies the connections to remove from each cell in the pathfinding graph, the connections are removed anti-clockwise.
+		// (Exemple : "03" means the first and fourth connections are removed i.e the right and upper-left-diagonal ones)
+		m_obstacleLayout
+			{
+				{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
+				{"01234567", "01234567", "01234567", "134567", "17", "10", "701", "701", "7", "01234567"},
+				{"01234567", "01234567", "01234567", "0123567", "01234567", "3457", "13457", "012345", "567", "01234567"},
+				{"01234567", "", "713", "014", "375", "137", "01234567", "123457", "567", "01234567"},
+				{"01234567", "3", "01234567", "345", "1357", "01234567", "357", "123", "567", "01234567"},
+				{"01234567", "", "01234567", "13", "01234567", "1357", "017", "01237", "567", "01234567"},
+				{"01234567", "1", "01234567", "7", "0135", "01237", "134567", "0123457", "567", "01234567"},
+				{"01234567", "", "0135", "017", "70134", "701345", "701235", "34567", "5", "01234567"},
+				{"01234567", "", "34", "345", "345", "345", "345", "5", "", "01234567"},
+				{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
+
+			},
+
+		m_pathfinder(m_accessibilityLayout, m_obstacleLayout)
 {
 	m_currentTask = 0;
 }
@@ -200,13 +218,16 @@ void CMyGame::workersWaypointing()
 		// If NPC not moving, start moving to the first waypoint
 		if (pWorker->GetSpeed() < 1)
 		{
-			pWorker->SetSpeed(250);
-
+			int *cell = pWorker->getCell();
+			pWorker->SetSpeed(250 * m_accessibilityLayout[cell[1]][cell[0]]);
 			pWorker->SetDirection(m_waypoints.front() - pWorker->GetPosition());
+
 			if (pWorker->GetDirection() > 10 && pWorker->GetDirection() < 180 - 10)
 				pWorker->SetAnimation("walkR");
 			else if (pWorker->GetDirection() < -10 && pWorker->GetDirection() > -180 + 10)
 				pWorker->SetAnimation("walkL");
+			else
+				pWorker->SetAnimation("walkR");
 		}
 
 		// Passed the waypoint ?
@@ -486,11 +507,7 @@ void CMyGame::OnInitialize()
 	// m_ui.push_back(new CSprite(320.f, 32.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Buttons/Button_Blue.png"), 0));
 
 	// Pathfinding graph initialization
-	m_pathfinder.setObstacles(m_obstacleLayout);
 	m_pathfinder.initialize();
-
-	// Core values
-	// m_money = 10;
 }
 
 // called when a new game is requested (e.g. when F2 pressed)

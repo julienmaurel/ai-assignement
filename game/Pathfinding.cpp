@@ -1,17 +1,17 @@
 #include "stdafx.h"
 #include "Pathfinding.h"
 
-Pathfinding::Pathfinding()
-{
-}
-
-// Initialize obstacles layout (TODO : pass obstacles in constructor)
-void Pathfinding::setObstacles(string obstacles[10][10]) 
+Pathfinding::Pathfinding(float accessibility[10][10], string obstacles[10][10])
 {
 	for (int i = 0; i < 10; i++)
 		for (int j = 0; j < 10; j++)
 		{
 			m_obstacles[i][j] = obstacles[i][j];
+		}
+	for (int i = 0; i < 10; i++)
+		for (int j = 0; j < 10; j++)
+		{
+			m_accessibility[i][j] = accessibility[i][j];
 		}
 }
 
@@ -23,22 +23,26 @@ void Pathfinding::initialize()
 		for (int j = 0; j < 10; j++) 
 	{
 		bool noObstacle = m_obstacles[j][i].find("01234567") == string::npos;
-		if (noObstacle)
-			m_graph.push_back(NODE{ i, j, CVector(32.f + j * 64.f, 32.f + i * 64.f) });
+		if (noObstacle) 
+		{
+			NODE newNode = NODE{ i, j, CVector(32.f + j * 64.f, 32.f + i * 64.f) };
+			newNode.accessibility = m_accessibility[i][j];
+			m_graph.push_back(newNode);
+		}
 	}
 	for (NODE& currentNode : m_graph)
 	{
 		int i = currentNode.row;
 		int j = currentNode.col;
 		int r = findNode(i, j + 1), ur = findNode(i + 1, j + 1), u = findNode(i + 1, j), ul = findNode(i + 1, j - 1), l = findNode(i, j - 1), bl = findNode(i - 1, j - 1), b = findNode(i - 1, j), br = findNode(i - 1, j + 1);
-		if (r != -1 && !OBSTACLE(i, j, 0)) currentNode.conlist.push_back(CONNECTION{ r, Distance(currentNode.pos, m_graph[r].pos) });
-		if (ur != -1 && !OBSTACLE(i, j, 1)) currentNode.conlist.push_back(CONNECTION{ ur, Distance(currentNode.pos, m_graph[ur].pos) });
-		if (u != -1 && !OBSTACLE(i, j, 2)) currentNode.conlist.push_back(CONNECTION{ u, Distance(currentNode.pos, m_graph[u].pos) });
-		if (ul != -1 && !OBSTACLE(i, j, 3)) currentNode.conlist.push_back(CONNECTION{ ul, Distance(currentNode.pos, m_graph[ul].pos) });
-		if (l != -1 && !OBSTACLE(i, j, 4)) currentNode.conlist.push_back(CONNECTION{ l, Distance(currentNode.pos, m_graph[l].pos) });
-		if (bl != -1 && !OBSTACLE(i, j, 5)) currentNode.conlist.push_back(CONNECTION{ bl, Distance(currentNode.pos, m_graph[bl].pos) });
-		if (b != -1 && !OBSTACLE(i, j, 6)) currentNode.conlist.push_back(CONNECTION{ b, Distance(currentNode.pos, m_graph[b].pos) });
-		if (br != -1 && !OBSTACLE(i, j, 7)) currentNode.conlist.push_back(CONNECTION{ br, Distance(currentNode.pos, m_graph[br].pos) });
+		if (r != -1 && !OBSTACLE(i, j, 0)) currentNode.conlist.push_back(CONNECTION{ r, Distance(currentNode.pos, m_graph[r].pos) * m_graph[r].accessibility });
+		if (ur != -1 && !OBSTACLE(i, j, 1)) currentNode.conlist.push_back(CONNECTION{ ur, Distance(currentNode.pos, m_graph[ur].pos) * m_graph[ur].accessibility });
+		if (u != -1 && !OBSTACLE(i, j, 2)) currentNode.conlist.push_back(CONNECTION{ u, Distance(currentNode.pos, m_graph[u].pos) * m_graph[u].accessibility });
+		if (ul != -1 && !OBSTACLE(i, j, 3)) currentNode.conlist.push_back(CONNECTION{ ul, Distance(currentNode.pos, m_graph[ul].pos) * m_graph[ul].accessibility });
+		if (l != -1 && !OBSTACLE(i, j, 4)) currentNode.conlist.push_back(CONNECTION{ l, Distance(currentNode.pos, m_graph[l].pos) * m_graph[l].accessibility });
+		if (bl != -1 && !OBSTACLE(i, j, 5)) currentNode.conlist.push_back(CONNECTION{ bl, Distance(currentNode.pos, m_graph[bl].pos) * m_graph[bl].accessibility });
+		if (b != -1 && !OBSTACLE(i, j, 6)) currentNode.conlist.push_back(CONNECTION{ b, Distance(currentNode.pos, m_graph[b].pos) * m_graph[b].accessibility });
+		if (br != -1 && !OBSTACLE(i, j, 7)) currentNode.conlist.push_back(CONNECTION{ br, Distance(currentNode.pos, m_graph[br].pos) * m_graph[br].accessibility });
 	}
 }
 
