@@ -5,13 +5,33 @@ CTree::CTree(Sint16 x, Sint16 y, CGraphics* pGraphics, Uint32 time) : CSprite(x,
 {
 	LoadAnimation(pGraphics, "wind", CSprite::Sheet(4, 3).Row(2).From(0).To(3));
 	SetAnimation("wind");
+	m_cutImage = new CGraphics(REPOSITORY + "/game/images/assets/Resources/Trees/Tree.png", 4, 3, 0, 0);
 
-	health = 100;
-	state = GROWN;
+	SetHealth(100.f);
+	m_state = GROWN;
 }
 
 CTree::~CTree(void)
 {
+}
+
+void CTree::changeState(STATE newState)
+{
+	if (m_state == newState)
+	{
+		return;
+	}
+
+	m_state = newState;
+	
+	if (newState == GROWN) 
+	{
+		SetAnimation("wind");
+	}
+	else 
+	{
+		SetImage(m_cutImage);
+	}
 }
 
 void CTree::OnUpdate(Uint32 time, Uint32 deltaTime)

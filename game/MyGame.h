@@ -6,8 +6,6 @@
 #include "Worker.h"
 #include "Pathfinding.h"
 
-const string REPOSITORY = "C:/Users/k2448765/source/repos/ai-assignement";
-
 // TODO : Add rocks and bridges
 #define GROUND(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Flat.png", 10, 4, col, row), 0)
 #define ELEVATION(col, row, x, y) new CSprite(x * 64.f + 32.f, y * 64.f + 32.f, new CGraphics(REPOSITORY + "/game/images/assets/Terrain/Ground/Tilemap_Elevation.png", 4, 8, col, row), 0)
@@ -79,8 +77,6 @@ class CMyGame : public CGame
 	string m_tileLayout[10][10];
 	BuildingType m_buildingLayout[10][10];
 	ResourceType m_resourceLayout[10][10];
-	float m_accessibilityLayout[10][10];
-	string m_obstacleLayout[10][10];
 
 	CSpriteList m_tiles;
 	CSpriteList m_waterTiles;
@@ -89,11 +85,6 @@ class CMyGame : public CGame
 	CTreeList m_trees;
 	CWorkerList m_workers;
 	CSpriteList m_ui;
-
-	Pathfinding m_pathfinder;
-	list<CVector> m_waypoints;
-
-	int m_currentTask;
 
 public:
 	CMyGame(void);
@@ -105,7 +96,6 @@ public:
 
 	// Gameplay
 	void gameLoop();
-	void computeWorkerWaypoints();
 	void workersWaypointing();
 
 	// Per-Frame Callback Funtions (must be implemented!)

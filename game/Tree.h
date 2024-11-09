@@ -6,20 +6,18 @@ public:
 	enum STATE { GROWN, CUT };
 
 private:
-	STATE state;
-	float health;
+	STATE m_state;
+	CGraphics* m_cutImage;
 
 public:
 	CTree(Sint16 x, Sint16 y, char* pFileBitmap, Uint32 time);
 	CTree(Sint16 x, Sint16 y, CGraphics* pGraphics, Uint32 time);
 	~CTree(void);
 
+	void changeState(STATE newState);
+	STATE getState() { return m_state; }
+
 	void OnUpdate(Uint32 time, Uint32 deltaTime);
-
-	void ChangeState(STATE newState);
-	STATE GetState() { return state; }
-
-	float GetHealth() { return health; }
 };
 
 typedef std::_gfc_std_ext<std::list<CTree*>> CTreeList;

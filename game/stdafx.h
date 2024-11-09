@@ -4,7 +4,6 @@
 //
 
 #pragma once
-
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -17,3 +16,5 @@
 
 #include "GFC.h"
 using namespace std;
+
+const string REPOSITORY = "C:/Users/julie/source/repos/ai-assignement";

@@ -48,42 +48,8 @@ CMyGame::CMyGame(void)
 				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
 				{NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R, NO_R},
-			},
-
-		m_accessibilityLayout
-			{
-				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f ,1.f},
-				{1.f, 1.f, 1.f, 1.f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 0.5f, 0.5f, 1.f, 1.f, 1.f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 1.f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 0.5f, 1.f, 1.f, 1.f, 0.5f, 0.5f ,1.f},
-				{1.f, 1.f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f, 0.5f ,1.f},
-				{1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f, 1.f ,1.f},
-			},
-
-		// The obstacle layout specifies the connections to remove from each cell in the pathfinding graph, the connections are removed anti-clockwise.
-		// (Exemple : "03" means the first and fourth connections are removed i.e the right and upper-left-diagonal ones)
-		m_obstacleLayout
-			{
-				{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
-				{"01234567", "01234567", "01234567", "134567", "17", "10", "701", "701", "7", "01234567"},
-				{"01234567", "01234567", "01234567", "0123567", "01234567", "3457", "13457", "012345", "567", "01234567"},
-				{"01234567", "", "713", "014", "375", "137", "01234567", "123457", "567", "01234567"},
-				{"01234567", "3", "01234567", "345", "1357", "01234567", "357", "123", "567", "01234567"},
-				{"01234567", "", "01234567", "13", "01234567", "1357", "017", "01237", "567", "01234567"},
-				{"01234567", "1", "01234567", "7", "0135", "01237", "134567", "0123457", "567", "01234567"},
-				{"01234567", "", "0135", "017", "70134", "701345", "701235", "34567", "5", "01234567"},
-				{"01234567", "", "34", "345", "345", "345", "345", "5", "", "01234567"},
-				{"01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567", "01234567"},
-
-			},
-
-		m_pathfinder(m_accessibilityLayout, m_obstacleLayout)
+			}
 {
-	m_currentTask = 0;
 }
 
 CMyGame::~CMyGame(void)
@@ -164,48 +130,7 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 
 void CMyGame::gameLoop() 
 {
-	computeWorkerWaypoints();
 	workersWaypointing();
-}
-
-void CMyGame::computeWorkerWaypoints() {
-
-	// Temporarily hard coded
-	CVector house = CVector(32.f + 2 * 64.f, 32.f + 1 * 64.f);
-	vector<CVector> trees = { CVector(32.f + 4 * 64.f, 32.f + 7 * 64.f), CVector(32.f + 6 * 64.f, 32.f + 6 * 64.f), CVector(32.f + 1 * 64.f, 32.f + 3 * 64.f) };
-	
-	// If the worker is idle, adds the necessary waypoints for the next task
-	if (m_waypoints.empty()) 
-	{
-		// Chose the new destination
-		CVector destination;
-		switch (m_currentTask % 4) 
-		{
-		case 0:
-			destination = trees[0];
-			break;
-		case 1:
-			destination = trees[1];
-			break;
-		case 2:
-			destination = trees[2];
-			break;
-		case 3:
-			destination = house;
-			break;
-		}
-		m_currentTask++;
-
-		// Use Dijkstra algorithm to add the waypoints
-		int nFirst = m_pathfinder.findClosestNode(m_workers.front()->GetPos());
-		int nLast = m_pathfinder.findClosestNode(destination);
-		vector<int> path;
-		if (m_pathfinder.dijkstra(nFirst, nLast, path))
-		{
-			m_pathfinder.addWaypoints(path, m_waypoints);
-			m_waypoints.push_back(destination);
-		}
-	}
 }
 
 void CMyGame::workersWaypointing() 
@@ -213,14 +138,14 @@ void CMyGame::workersWaypointing()
 	CWorker* pWorker = m_workers.front();
 
 	// NPCs : follow their waypoints
-	if (!m_waypoints.empty())
+	if (!pWorker->getWaypoints().empty())
 	{
 		// If NPC not moving, start moving to the first waypoint
 		if (pWorker->GetSpeed() < 1)
 		{
 			int *cell = pWorker->getCell();
-			pWorker->SetSpeed(250 * m_accessibilityLayout[cell[1]][cell[0]]);
-			pWorker->SetDirection(m_waypoints.front() - pWorker->GetPosition());
+			pWorker->SetSpeed(250 * pWorker->getAccessibility(cell[1], cell[0]));
+			pWorker->SetDirection(pWorker->getWaypoints().front() - pWorker->GetPosition());
 
 			if (pWorker->GetDirection() > 10 && pWorker->GetDirection() < 180 - 10)
 				pWorker->SetAnimation("walkR");
@@ -231,12 +156,12 @@ void CMyGame::workersWaypointing()
 		}
 
 		// Passed the waypoint ?
-		CVector v = m_waypoints.front() - pWorker->GetPosition();
+		CVector v = pWorker->getWaypoints().front() - pWorker->GetPosition();
 		if (Dot(pWorker->GetVelocity(), v) < 0)
 		{
 			// Stop movement
-			m_waypoints.pop_front();
-			if (m_waypoints.empty()) {
+			pWorker->getWaypoints().pop_front();
+			if (pWorker->getWaypoints().empty()) {
 				pWorker->SetAnimation("idleR");
 			}
 			pWorker->SetVelocity(0, 0);
@@ -266,7 +191,6 @@ void CMyGame::OnUpdate()
 
 void CMyGame::OnDraw(CGraphics* g)
 {
-
 	m_waterTiles.for_each(&CSprite::Draw, g);
 	m_foamTiles.for_each(&CSprite::Draw, g);
 	m_tiles.for_each(&CSprite::Draw, g);
@@ -294,7 +218,7 @@ void CMyGame::OnDraw(CGraphics* g)
 	// Change boolean values here for debugging
 	// Draw Dijkstra graph
 	if (false) {
-		m_pathfinder.draw(g);
+		m_workers.front()->getPathfinder().draw(g);
 	}
 	// Draw grid
 	if (false) {
@@ -500,14 +424,12 @@ void CMyGame::OnInitialize()
 	m_workers.push_back(new CWorker(3 * 64.f + 32.f, 2 * 64.f + 32.f,
 		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Left.png"),
 		new CGraphics(REPOSITORY + "/game/images/assets/Factions/Knights/Troops/Pawn/Red/Pawn_Red_Right.png"),
+		m_trees,
 		0));
 
 	// Create UI
 	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));
 	// m_ui.push_back(new CSprite(320.f, 32.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Buttons/Button_Blue.png"), 0));
-
-	// Pathfinding graph initialization
-	m_pathfinder.initialize();
 }
 
 // called when a new game is requested (e.g. when F2 pressed)
