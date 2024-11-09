@@ -96,6 +96,7 @@ public:
 
 	// Gameplay
 	void gameLoop();
+	void regenerateTrees();
 	void workersWaypointing();
 
 	// Per-Frame Callback Funtions (must be implemented!)

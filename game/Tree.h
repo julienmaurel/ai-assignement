@@ -17,6 +17,9 @@ public:
 	void changeState(STATE newState);
 	STATE getState() { return m_state; }
 
+	void hit();
+	void regenerate();
+
 	void OnUpdate(Uint32 time, Uint32 deltaTime);
 };
 

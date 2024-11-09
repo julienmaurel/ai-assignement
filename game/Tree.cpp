@@ -15,6 +15,21 @@ CTree::~CTree(void)
 {
 }
 
+void CTree::hit()
+{
+	SetHealth(GetHealth() - 1.f);
+	if (GetHealth() <= 0)
+	{
+		m_state = CUT;
+	}
+}
+
+void CTree::regenerate()
+{
+	m_state = GROWN;
+	SetHealth(100.f);
+}
+
 void CTree::changeState(STATE newState)
 {
 	if (m_state == newState)

@@ -130,7 +130,19 @@ TileType CMyGame::stringcodeToTileType(string const& inString) {
 
 void CMyGame::gameLoop() 
 {
+	regenerateTrees();
 	workersWaypointing();
+}
+
+void CMyGame::regenerateTrees()
+{
+	int sec = 10;
+	for (CTree *pTree : m_trees) 
+	{
+		if (pTree->getState() == CTree::CUT && (rand() % (60 * sec) == 0)) {
+			pTree->regenerate();
+		}
+	}
 }
 
 void CMyGame::workersWaypointing() 
