@@ -20,13 +20,13 @@ void CTree::hit()
 	SetHealth(GetHealth() - 1.f);
 	if (GetHealth() <= 0)
 	{
-		m_state = CUT;
+		changeState(CUT);
 	}
 }
 
 void CTree::regenerate()
 {
-	m_state = GROWN;
+	changeState(GROWN);
 	SetHealth(100.f);
 }
 
