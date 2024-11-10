@@ -43,7 +43,7 @@ CWorker::CWorker(Sint16 x, Sint16 y, CGraphics* pGraphicsLeft, CGraphics* pGraph
 	SetAnimation("idleR");
 
 	m_pathfinder.initialize();
-	m_speed = 500;
+	m_speed = 250;
 	m_nWood = 0;
 	m_woodLimit = 5;
 	m_totalWoodCount = 0;
