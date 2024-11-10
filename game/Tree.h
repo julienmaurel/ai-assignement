@@ -3,7 +3,7 @@
 class CTree : public CSprite 
 {
 public:
-	enum STATE { GROWN, CUT };
+	enum STATE { GROWN, CUT, STROKE };
 
 private:
 	STATE m_state;
@@ -17,7 +17,7 @@ public:
 	void changeState(STATE newState);
 	STATE getState() { return m_state; }
 
-	void hit();
+	bool hit();
 	void regenerate();
 
 	void OnUpdate(Uint32 time, Uint32 deltaTime);

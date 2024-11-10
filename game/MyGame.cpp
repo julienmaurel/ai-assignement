@@ -136,10 +136,10 @@ void CMyGame::gameLoop()
 
 void CMyGame::regenerateTrees()
 {
-	int sec = 10;
+	int durationSeconds = 15;
 	for (CTree *pTree : m_trees) 
 	{
-		if (pTree->getState() == CTree::CUT && (rand() % (60 * sec) == 0)) {
+		if (pTree->getState() == CTree::CUT && (rand() % (60 * durationSeconds) == 0)) {
 			pTree->regenerate();
 		}
 	}
@@ -156,7 +156,7 @@ void CMyGame::workersWaypointing()
 		if (pWorker->GetSpeed() < 1)
 		{
 			int *cell = pWorker->getCell();
-			pWorker->SetSpeed(250 * pWorker->getAccessibility(cell[1], cell[0]));
+			pWorker->SetSpeed(pWorker->getSpeed() * pWorker->getAccessibility(cell[1], cell[0]));
 			pWorker->SetDirection(pWorker->getWaypoints().front() - pWorker->GetPosition());
 
 			if (pWorker->GetDirection() > 10 && pWorker->GetDirection() < 180 - 10)
@@ -226,6 +226,10 @@ void CMyGame::OnDraw(CGraphics* g)
 
 	m_buildings.for_each(&CSprite::Draw, g);
 	m_ui.for_each(&CSprite::Draw, g);
+	
+	CWorker* p = m_workers.front();
+	*g << font(48) << color(CColor::Black()) << xy(70, 550) << p->getTotalWoodCount() << endl;
+	*g << font(24) << color(CColor::Black()) << xy(p->GetPos().GetX() - 10.f, p->GetPos().GetY() + 40.f) << p->getWoodCount() << endl;
 
 	// Change boolean values here for debugging
 	// Draw Dijkstra graph
@@ -440,8 +444,7 @@ void CMyGame::OnInitialize()
 		0));
 
 	// Create UI
-	// m_ui.push_back(new CSprite(320.f + 64.f - 14.f, 32.f + 6.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Ribbons/Ribbon_Blue_Connection_Left.png"), 0));
-	// m_ui.push_back(new CSprite(320.f, 32.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Buttons/Button_Blue.png"), 0));
+	m_ui.push_back(new CSprite(81.f, 640.f - 81.f + 10.f, new CGraphics(REPOSITORY + "/game/images/assets/UI/Banners/Banner_Horizontal.png"), 0));
 }
 
 // called when a new game is requested (e.g. when F2 pressed)
